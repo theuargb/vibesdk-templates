@@ -1,0 +1,13 @@
+[
+    "components.json",
+    "package.json",
+    "tailwind.config.js",
+    "tsconfig.js",
+    "src/App.css",
+    "src/App.tsx",
+    "src/main.tsx",
+    "src/index.css",
+    "src/lib/",
+    "src/hooks/",
+    "worker/"
+]
