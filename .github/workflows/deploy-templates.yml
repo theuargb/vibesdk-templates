@@ -150,7 +150,7 @@ jobs:
             filename=$(basename "$zip_file")
             echo "Uploading: $filename"
             
-            aws s3 cp "$zip_file" "s3://$R2_BUCKET_NAME/templates/$filename" \
+            aws s3 cp "$zip_file" "s3://$R2_BUCKET_NAME/$filename" \
               --content-type "application/zip" \
               --cache-control "public, max-age=3600" \
               --metadata "updated=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
