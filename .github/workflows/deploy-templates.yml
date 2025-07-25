@@ -97,11 +97,27 @@ jobs:
         ls -la zips/
         
     - name: Configure AWS CLI for R2
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-        aws-region: auto
+      run: |
+        # Configure AWS CLI for Cloudflare R2 without using STS
+        mkdir -p ~/.aws
+        
+        # Create AWS credentials file
+        cat > ~/.aws/credentials << EOF
+        [default]
+        aws_access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+        aws_secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        EOF
+        
+        # Create AWS config file  
+        cat > ~/.aws/config << EOF
+        [default]
+        region = us-east-1
+        output = json
+        EOF
+        
+        # Verify AWS CLI configuration
+        aws --version
+        echo "✅ AWS CLI configured for R2"
         
     - name: Upload files to Cloudflare R2
       env:
