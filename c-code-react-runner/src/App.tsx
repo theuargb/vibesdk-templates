@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function App() {
   const [isDark, setIsDark] = useState(() => {
@@ -23,12 +24,14 @@ export default function App() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
-      <button 
+      <Button 
         onClick={toggleTheme} 
-        className="absolute top-4 right-4 px-3 py-2 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50 cursor-pointer"
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 right-4 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50"
       >
         {isDark ? '☀️' : '🌙'}
-      </button>
+      </Button>
 
       <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20" />
       
@@ -48,11 +51,12 @@ export default function App() {
         </p>
 
         <div className="flex justify-center">
-          <button 
-            className="btn btn-gradient px-8 py-4 text-lg font-semibold hover:scale-105 hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
+          <Button 
+            size="lg"
+            className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
           >
             Please wait
-          </button>
+          </Button>
         </div>
       </div>
 

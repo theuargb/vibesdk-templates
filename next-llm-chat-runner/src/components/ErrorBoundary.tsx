@@ -1,6 +1,8 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { errorReporter } from '@/lib/errorReporter';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Props {
   children: ReactNode;
@@ -71,7 +73,8 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="absolute inset-0 bg-gradient-rainbow opacity-5 dark:opacity-10" />
             
             {/* Error card */}
-            <div className="relative bg-card/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-border/50 p-8 space-y-6">
+            <Card className="relative backdrop-blur-sm shadow-2xl">
+              <CardContent className="p-8 space-y-6">
               {/* Icon and title */}
               <div className="text-center space-y-4">
                 <div className="mx-auto w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center">
@@ -92,20 +95,21 @@ export class ErrorBoundary extends Component<Props, State> {
 
               {/* Action buttons */}
               <div className="space-y-3">
-                <button
+                <Button
                   onClick={this.retry}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-200 font-medium"
+                  className="w-full"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RefreshCw className="w-4 h-4 mr-2" />
                   Try Again
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={this.goHome}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-all duration-200"
+                  variant="secondary"
+                  className="w-full"
                 >
-                  <Home className="w-4 h-4" />
+                  <Home className="w-4 h-4 mr-2" />
                   Go to Homepage
-                </button>
+                </Button>
               </div>
 
               {/* Error details (collapsible) */}
@@ -120,7 +124,8 @@ export class ErrorBoundary extends Component<Props, State> {
                   </pre>
                 </details>
               )}
-            </div>
+              </CardContent>
+            </Card>
 
             {/* Support text */}
             <p className="text-center text-sm text-muted-foreground mt-6">

@@ -200,12 +200,14 @@ export default function App() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden">
-      <button 
+      <Button 
         onClick={() => setIsDark(!isDark)} 
-        className="absolute top-4 right-4 px-3 py-2 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50 cursor-pointer"
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 right-4 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50"
       >
         {isDark ? '☀️' : '🌙'}
-      </button>
+      </Button>
 
       <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20" />
       

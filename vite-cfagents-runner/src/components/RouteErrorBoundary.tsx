@@ -1,6 +1,8 @@
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
 import { useEffect } from 'react';
 import { errorReporter } from '@/lib/errorReporter';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function RouteErrorBoundary() {
   const error = useRouteError();
@@ -41,56 +43,58 @@ export function RouteErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="max-w-md w-full p-8 bg-card rounded-lg shadow-lg border">
-          <h1 className="text-2xl font-bold text-destructive mb-4">
-            {error.status} {error.statusText}
-          </h1>
-          <p className="text-muted-foreground mb-4">
-            Sorry, an error occurred while loading this page.
-          </p>
-          {error.data && (
-            <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-40">
-              {JSON.stringify(error.data, null, 2)}
-            </pre>
-          )}
-          <a
-            href="/"
-            className="block mt-6 text-center px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-          >
-            Go to Home
-          </a>
-        </div>
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-destructive">
+              {error.status} {error.statusText}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Sorry, an error occurred while loading this page.
+            </p>
+            {error.data && (
+              <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-40">
+                {JSON.stringify(error.data, null, 2)}
+              </pre>
+            )}
+            <Button asChild className="w-full">
+              <a href="/">Go to Home</a>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="max-w-md w-full p-8 bg-card rounded-lg shadow-lg border">
-        <h1 className="text-2xl font-bold text-destructive mb-4">
-          Unexpected Error
-        </h1>
-        <p className="text-muted-foreground mb-4">
-          An unexpected error occurred while loading this page.
-        </p>
-        {error instanceof Error && (
-          <details className="mb-6">
-            <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
-              Error details
-            </summary>
-            <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto max-h-40">
-              {error.message}
-              {error.stack && '\n\n' + error.stack}
-            </pre>
-          </details>
-        )}
-        <a
-          href="/"
-          className="block text-center px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-        >
-          Go to Home
-        </a>
-      </div>
+      <Card className="max-w-md w-full">
+        <CardHeader>
+          <CardTitle className="text-destructive">
+            Unexpected Error
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-muted-foreground">
+            An unexpected error occurred while loading this page.
+          </p>
+          {error instanceof Error && (
+            <details>
+              <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                Error details
+              </summary>
+              <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto max-h-40">
+                {error.message}
+                {error.stack && '\n\n' + error.stack}
+              </pre>
+            </details>
+          )}
+          <Button asChild className="w-full">
+            <a href="/">Go to Home</a>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
