@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Runtime Error Logging Test</title>
+</head>
+<body>
+    <h1>Runtime Error Logging Test</h1>
+    <button onclick="testConsoleError()">Test console.error</button>
+    <button onclick="testConsoleWarn()">Test console.warn</button>
+    <button onclick="testConsoleLog()">Test console.log (normal)</button>
+    <button onclick="testConsoleLogError()">Test console.log (error-like)</button>
+    <button onclick="testUnhandledError()">Test Unhandled Error</button>
+    <button onclick="testUnhandledPromise()">Test Unhandled Promise</button>
+
+    <script type="module">
+        // Import the runtime error logger from core-utils
+        import { runtimeErrorLogger } from './worker/core-utils.js';
+        
+        // Set up browser error handlers manually for this test
+        runtimeErrorLogger.initialize();
+        
+        // Add browser-specific error handlers
+        window.addEventListener('error', (event) => {
+            runtimeErrorLogger.logError(event.error || event.message, 'error', {
+                source: event.filename,
+                filePath: event.filename,
+                lineNumber: event.lineno,
+                columnNumber: event.colno,
+                stack: event.error?.stack,
+                rawOutput: `${event.message} at ${event.filename}:${event.lineno}:${event.colno}`
+            });
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            const error = event.reason;
+            runtimeErrorLogger.logError(error instanceof Error ? error : String(error), 'error', {
+                source: 'unhandledrejection',
+                stack: error instanceof Error ? error.stack : undefined,
+                rawOutput: String(error)
+            });
+        });
+
+        // Test functions
+        window.testConsoleError = () => {
+            console.error('This is a test error message');
+        };
+
+        window.testConsoleWarn = () => {
+            console.warn('This is a test warning message');
+        };
+
+        window.testConsoleLog = () => {
+            console.log('This is a normal log message');
+        };
+
+        window.testConsoleLogError = () => {
+            console.log('This message contains error keyword');
+        };
+
+        window.testUnhandledError = () => {
+            throw new Error('This is an unhandled error');
+        };
+
+        window.testUnhandledPromise = () => {
+            Promise.reject(new Error('This is an unhandled promise rejection'));
+        };
+
+        console.log('Error logging test page loaded. Check console for JSON output.');
+    </script>
+</body>
+</html>

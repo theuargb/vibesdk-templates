@@ -25,7 +25,7 @@ export class ChatAgent extends Agent<Env, ChatState> {
    */
   async onStart(): Promise<void> {
     this.chatHandler = new ChatHandler(
-      this.env.CF_AI_BASE_URL,
+      this.env.CF_AI_BASE_URL ,
       this.env.CF_AI_API_KEY,
       this.state.model
     );

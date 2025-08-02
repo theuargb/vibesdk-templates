@@ -4,7 +4,9 @@ export const SUPPORTED_MODELS = [
   'google-ai-studio/gemini-2.0-flash',
   'google-ai-studio/gemini-2.5-flash',
   'google-ai-studio/gemini-2.5-pro',
-  'anthropic/claude-opus-4-20250514'
+  'anthropic/claude-opus-4-20250514',
+  'grok/grok-4-latest',
+  'workers-ai/@cf/moonshotai/kimi-k2-instruct'
 ] as const;
 
 export const DEFAULT_MODEL = 'google-ai-studio/gemini-2.5-flash';

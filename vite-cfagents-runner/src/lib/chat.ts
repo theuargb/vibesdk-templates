@@ -11,7 +11,9 @@ export const MODELS = [
   { id: 'openai/gpt-4o', name: 'ChatGPT 4o' },
   { id: 'google-ai-studio/gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
   { id: 'google-ai-studio/gemini-2.5-pro', name: 'Gemini 2.5 Pro' },
-  { id: 'anthropic/claude-opus-4-20250514', name: 'Claude Opus 4' }
+  { id: 'anthropic/claude-opus-4-20250514', name: 'Claude Opus 4' },
+  { id: 'grok/grok-4-latest', name: 'Grok 4 Latest' },
+  { id: 'workers-ai/@cf/moonshotai/kimi-k2-instruct', name: 'Kimi K2 Instruct' },
 ];
 
 class ChatService {

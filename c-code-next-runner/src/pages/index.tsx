@@ -2,6 +2,7 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   // Initialize state directly from localStorage or system preference
@@ -38,12 +39,14 @@ export default function Home() {
       </Head>
 
       <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden">
-        <button
+        <Button
           onClick={toggleTheme}
-          className="absolute top-4 right-4 px-3 py-2 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50 cursor-pointer"
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50"
         >
           {isDark ? '☀️' : '🌙'}
-        </button>
+        </Button>
 
         <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20" />
         
@@ -77,13 +80,17 @@ export default function Home() {
           </p>
 
           <div className="flex justify-center">
-            <motion.button 
-              className="btn btn-gradient px-8 py-4 text-lg font-semibold"
+            <motion.div
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              Please wait
-            </motion.button>
+              <Button 
+                size="lg"
+                className="btn-gradient px-8 py-4 text-lg font-semibold"
+              >
+                Please wait
+              </Button>
+            </motion.div>
           </div>
         </motion.div>
 

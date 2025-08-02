@@ -17,6 +17,7 @@ export class ChatHandler {
       baseURL: aiGatewayUrl,
       apiKey: apiKey
     });
+    console.log("BASE URL", aiGatewayUrl);
     this.model = model;
   }
 
