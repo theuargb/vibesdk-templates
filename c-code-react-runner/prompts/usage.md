@@ -87,7 +87,7 @@ Usage Example:
         // custom hook for example ignore
         import { useStopwatch } from '../hooks/useStopwatch'
 
-        export default function Stopwatch({ initialTime = 0 }) {
+        export function Stopwatch({ initialTime = 0 }) {
         const { time, isRunning, start, pause, reset } = useStopwatch(initialTime);
 
         return (
