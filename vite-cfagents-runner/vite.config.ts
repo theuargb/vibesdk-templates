@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react(), cloudflare()],
   build: {
     minify: false,
-    sourcemap: false,    
+    sourcemap: true,    
   },
   server: {
     allowedHosts: true,

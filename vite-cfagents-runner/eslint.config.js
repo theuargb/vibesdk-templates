@@ -26,6 +26,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       ...importPlugin.configs.recommended.rules,
       ...importPlugin.configs.typescript.rules,
+      'prefer-const': 'off',
       'react-hooks/exhaustive-deps': 'error',
       '@typescript-eslint/no-unused-vars': "off",
       '@typescript-eslint/no-explicit-any': 'off',
