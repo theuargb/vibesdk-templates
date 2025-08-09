@@ -42,7 +42,7 @@ export class ChatHandler {
         messages,
         tools: toolDefinitions,
         tool_choice: 'auto',
-        max_tokens: 16000,
+        max_completion_tokens: 16000,
         stream: true
       });
 

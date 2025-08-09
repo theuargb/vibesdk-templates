@@ -14,6 +14,9 @@ export const MODELS = [
   { id: 'anthropic/claude-opus-4-20250514', name: 'Claude Opus 4' },
   { id: 'grok/grok-4-latest', name: 'Grok 4 Latest' },
   { id: '@cf/moonshotai/kimi-k2-instruct', name: 'Kimi K2 Instruct' },
+  { id: 'openai/gpt-5', name: 'ChatGPT 5' },
+  { id: 'openai/gpt-5-mini', name: 'ChatGPT 5 Mini' },
+  { id: 'openai/gpt-oss-120b', name: 'ChatGPT OSS 120B' },
 ];
 
 class ChatService {
