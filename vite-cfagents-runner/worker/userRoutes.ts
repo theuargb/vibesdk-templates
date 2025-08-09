@@ -2,12 +2,12 @@ import { Hono } from "hono";
 import { getAgentByName } from 'agents';
 import { ChatAgent } from './agent';
 import { API_RESPONSES } from './config';
-import { HonoBindings, getAppController, registerSession, unregisterSession } from "./core-utils";
+import { Env, getAppController, registerSession, unregisterSession } from "./core-utils";
 
 /**
  * DO NOT MODIFY THIS FUNCTION. Only for your reference.
  */
-export function coreRoutes(app: Hono<{ Bindings: HonoBindings }>) {
+export function coreRoutes(app: Hono<{ Bindings: Env }>) {
     // Use this API for conversations. **DO NOT MODIFY**
     app.all('/api/chat/:sessionId/*', async (c) => {
         try {
@@ -31,7 +31,7 @@ export function coreRoutes(app: Hono<{ Bindings: HonoBindings }>) {
     });
 }
 
-export function userRoutes(app: Hono<{ Bindings: HonoBindings }>) {
+export function userRoutes(app: Hono<{ Bindings: Env }>) {
     // Add your routes here
     /**
      * List all chat sessions

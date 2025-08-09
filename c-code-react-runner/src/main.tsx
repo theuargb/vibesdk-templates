@@ -17,6 +17,7 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Don't touch this code
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>

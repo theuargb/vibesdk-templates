@@ -1,7 +1,6 @@
 const nextConfig = {
   /* Simplified Next.js 15.3.1 configuration for stability */
   reactStrictMode: false, // Disable in dev for faster startup
-  allowedDevOrigins: ['local-origin.dev', '*.local-origin.dev', '*.trycloudflare.com'],
   
   // Basic compiler optimizations
   compiler: {

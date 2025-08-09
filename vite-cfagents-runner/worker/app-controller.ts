@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 import type { SessionInfo } from './types';
+import type { Env } from './core-utils';
 
 // 🤖 AI Extension Point: Add session management features
 export class AppController extends DurableObject<Env> {

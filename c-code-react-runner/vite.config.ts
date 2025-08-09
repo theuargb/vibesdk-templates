@@ -8,8 +8,17 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 export default defineConfig({
   plugins: [react(), cloudflare()],
   build: {
-    minify: false,
-    sourcemap: true,    
+    minify: true,
+    sourcemap: 'inline', // Use inline source maps for better error reporting
+    rollupOptions: {
+      output: {
+        sourcemapExcludeSources: false, // Include original source in source maps
+      },
+    },
+  },
+  // Enable source maps in development too
+  css: {
+    devSourcemap: true,
   },
   server: {
     allowedHosts: true,
@@ -25,6 +34,11 @@ export default defineConfig({
   optimizeDeps: {
     // This is still crucial for reducing the time from when `bun run dev`
     // is executed to when the server is actually ready.
-    include: ['react', 'react-dom', 'react-router-dom'], 
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: ['agents'], // Exclude agents package from pre-bundling due to Node.js dependencies
+  },
+  define: {
+    // Define Node.js globals for the agents package
+    global: 'globalThis',
   },
 })

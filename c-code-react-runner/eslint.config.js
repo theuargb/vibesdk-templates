@@ -27,16 +27,37 @@ export default tseslint.config(
       ...importPlugin.configs.recommended.rules,
       ...importPlugin.configs.typescript.rules,
       'prefer-const': 'off',
-      'react-hooks/exhaustive-deps': 'error',
+      "react-hooks/rules-of-hooks": "error", 
+      "react-hooks/exhaustive-deps": "error",
       '@typescript-eslint/no-unused-vars': "off",
       '@typescript-eslint/no-explicit-any': 'off',
       'react-refresh/only-export-components': [
-        'warn',
+        'error',
         { allowConstantExport: true },
       ],
       'import/named': 'error',
       'import/default': 'error',
-      'import/no-unresolved': 'error',
+      'import/no-unresolved': ['error', { 
+        ignore: ['cloudflare:workers', 'agents'] 
+      }],
+
+      // CHANGED: Replaced the flawed rule with a more intelligent one.
+      "no-restricted-syntax": [
+        "error",
+        {
+          // This selector is more precise. In plain English, it means:
+          // "Inside a function component (named in PascalCase), find any `set...` call,
+          // but EXCLUDE any calls that are inside a nested function definition (like an event handler)."
+          // This correctly finds the bug while ignoring the false positive.
+          "selector": ":function[id.name=/^[A-Z]/] CallExpression[callee.name=/^set[A-Z]/]:not(ArrowFunctionExpression CallExpression, FunctionExpression CallExpression)",
+          "message": "State setters should not be called directly in the component's render body. This will cause an infinite render loop. Use useEffect or an event handler instead."
+        },
+        {
+          // This rule is a good backup to prevent setters inside memoization hooks.
+          "selector": "CallExpression[callee.name=/^set[A-Z]/] > :function[parent.callee.name='useMemo'], CallExpression[callee.name=/^set[A-Z]/] > :function[parent.callee.name='useCallback']",
+          "message": "State setters should not be called inside useMemo or useCallback. These hooks are for memoization, not for side effects."
+        }
+      ],
     },
     settings: {
       'import/resolver': {

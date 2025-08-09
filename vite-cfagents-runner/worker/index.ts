@@ -1,11 +1,15 @@
+// Making changes to this file is **RISKY**
+// You may create new routes, but do not modify existing routes unless they are marked as **REPLACE**
+// Please follow the existing patterns and structure. For example, do not use `serveStatic` or any such thing that can break the existing functionality.
+
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { Env } from "./core-utils";
 import { SUPPORTED_MODELS, API_RESPONSES } from "./config";
 import { userRoutes, coreRoutes } from "./userRoutes";
 import { ChatAgent } from "./agent";
 import { AppController } from "./app-controller";
-
 export { ChatAgent, AppController };
 export interface ClientErrorReport {
   message: string;
@@ -21,9 +25,8 @@ export interface ClientErrorReport {
   colno?: number;
   error?: unknown;
 }
-type WorkerBindings = Env;
 
-const app = new Hono<{ Bindings: WorkerBindings }>();
+const app = new Hono<{ Bindings: Env }>();
 
 /** DO NOT TOUCH THE CODE BELOW THIS LINE */
 // Middleware
@@ -83,4 +86,4 @@ app.notFound((c) =>
 
 export default {
   fetch: app.fetch,
-} satisfies ExportedHandler<WorkerBindings>;
+} satisfies ExportedHandler<Env>;

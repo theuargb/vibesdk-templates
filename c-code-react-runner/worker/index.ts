@@ -8,6 +8,7 @@ import { logger } from 'hono/logger';
 import type { ClientErrorReport } from './types';
 import { userRoutes } from './userRoutes';
 import { Bindings } from './types';
+
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', logger());

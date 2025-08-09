@@ -1,4 +1,5 @@
 import { Agent } from 'agents';
+import type { Env } from './core-utils';
 import type { ChatState } from './types';
 import { ChatHandler } from './chat';
 import { DEFAULT_MODEL, API_RESPONSES, isValidModel } from './config';

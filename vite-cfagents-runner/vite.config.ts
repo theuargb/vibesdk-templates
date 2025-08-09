@@ -8,8 +8,17 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 export default defineConfig({
   plugins: [react(), cloudflare()],
   build: {
-    minify: false,
-    sourcemap: true,    
+    minify: true,
+    sourcemap: 'inline', // Use inline source maps for better error reporting
+    rollupOptions: {
+      output: {
+        sourcemapExcludeSources: false, // Include original source in source maps
+      },
+    },
+  },
+  // Enable source maps in development too
+  css: {
+    devSourcemap: true,
   },
   server: {
     allowedHosts: true,

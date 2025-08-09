@@ -1,11 +1,18 @@
 import type { AppController } from './app-controller';
+import type { ChatAgent } from './agent';
 
 /**
  * Core utilities for the Cloudflare Agents template
  * DO NOT MODIFY THIS FILE - Hidden from AI to prevent breaking core functionality
  */
-
-export type HonoBindings = Env;
+export interface Env {
+    CF_AI_BASE_URL: string;
+    CF_AI_API_KEY: string;
+    SERPAPI_KEY: string;
+    OPENROUTER_API_KEY: string;
+    CHAT_AGENT: DurableObjectNamespace<ChatAgent>;
+    APP_CONTROLLER: DurableObjectNamespace<AppController>;
+}
 
 /**
  * Get AppController stub for session management
