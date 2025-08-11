@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "c-code-react-runner",
+	"name": "vite-cf-do-kv-runner",
 	"main": "worker/index.ts",
 	"compatibility_date": "2025-04-24",
 	"assets": {
