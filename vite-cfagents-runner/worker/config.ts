@@ -1,17 +1,3 @@
-// Supported AI models. DONT EDIT
-export const SUPPORTED_MODELS = [
-  'openai/gpt-4o',
-  'google-ai-studio/gemini-2.0-flash',
-  'google-ai-studio/gemini-2.5-flash',
-  'google-ai-studio/gemini-2.5-pro',
-  'anthropic/claude-opus-4-20250514',
-  'grok/grok-4-latest',
-  '@cf/moonshotai/kimi-k2-instruct',
-  'openai/gpt-5',
-  'openai/gpt-5-mini',
-  'openai/gpt-oss-120b',
-] as const;
-
 export const DEFAULT_MODEL = 'google-ai-studio/gemini-2.5-flash';
 
 export const API_RESPONSES = {
@@ -22,7 +8,3 @@ export const API_RESPONSES = {
   AGENT_ROUTING_FAILED: 'Agent routing failed',
   INTERNAL_ERROR: 'Internal Server Error'
 } as const;
-
-export function isValidModel(model: string): model is typeof SUPPORTED_MODELS[number] {
-  return SUPPORTED_MODELS.includes(model as typeof SUPPORTED_MODELS[number]);
-}

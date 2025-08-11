@@ -1,11 +1,10 @@
 # Template Selection Guidelines
 
-This template provides a minimal but powerful setup to kickstart a modern React single-page application (SPA).
+This template provides a minimal but powerful setup for backend heavy projects
 
 - Use this template when you need:
-    * Simple projects that are suitable for Vite
+    * Backend heavy projects that are suitable for Vite
     * Projects that require server side state persistence (provided via durable objects or Workers KV cache)
-    * Projects that require server side processing (provided via Cloudflare Workers)
     * Projects that require a lot of backend or server-side stuff or database
 
 - Do not use it for

@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import type { Message, ToolCall } from './types';
 import { getToolDefinitions, executeTool } from './tools';
+import { ChatCompletionMessageFunctionToolCall } from 'openai/resources/index.mjs';
 
 /**
  * ChatHandler - Handles all chat-related operations
@@ -43,7 +44,8 @@ export class ChatHandler {
         tools: toolDefinitions,
         tool_choice: 'auto',
         max_completion_tokens: 16000,
-        stream: true
+        stream: true,
+        // reasoning_effort: 'low'
       });
 
       return this.handleStreamResponse(stream, message, conversationHistory, onChunk);
@@ -69,7 +71,7 @@ export class ChatHandler {
     onChunk: (chunk: string) => void
   ) {
     let fullContent = '';
-    const accumulatedToolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] = [];
+    const accumulatedToolCalls: ChatCompletionMessageFunctionToolCall[] = [];
     
     try {
       for await (const chunk of stream) {
@@ -136,7 +138,7 @@ export class ChatHandler {
       };
     }
 
-    const toolCalls = await this.executeToolCalls(responseMessage.tool_calls);
+    const toolCalls = await this.executeToolCalls(responseMessage.tool_calls as ChatCompletionMessageFunctionToolCall[]);
     const finalResponse = await this.generateToolResponse(
       message, 
       conversationHistory, 
@@ -150,7 +152,7 @@ export class ChatHandler {
   /**
    * Execute all tool calls from OpenAI response
    */
-  private async executeToolCalls(openAiToolCalls: OpenAI.Chat.Completions.ChatCompletionMessageToolCall[]): Promise<ToolCall[]> {
+  private async executeToolCalls(openAiToolCalls: ChatCompletionMessageFunctionToolCall[]): Promise<ToolCall[]> {
     return Promise.all(
       openAiToolCalls.map(async (tc) => {
         try {

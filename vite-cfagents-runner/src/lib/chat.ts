@@ -11,12 +11,13 @@ export const MODELS = [
   { id: 'openai/gpt-4o', name: 'ChatGPT 4o' },
   { id: 'google-ai-studio/gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
   { id: 'google-ai-studio/gemini-2.5-pro', name: 'Gemini 2.5 Pro' },
-  { id: 'anthropic/claude-opus-4-20250514', name: 'Claude Opus 4' },
   { id: 'grok/grok-4-latest', name: 'Grok 4 Latest' },
-  { id: '@cf/moonshotai/kimi-k2-instruct', name: 'Kimi K2 Instruct' },
+  { id: 'workers-ai/@cf/moonshotai/kimi-k2-instruct', name: 'Kimi K2 Instruct' },
   { id: 'openai/gpt-5', name: 'ChatGPT 5' },
   { id: 'openai/gpt-5-mini', name: 'ChatGPT 5 Mini' },
   { id: 'openai/gpt-oss-120b', name: 'ChatGPT OSS 120B' },
+  { id: 'cerebras/gpt-oss-120b', name: 'Cerebras ChatGPT OSS 120B' },
+  { id: 'cerebras/qwen-3-coder-480b', name: 'Cerebras Qwen 3 Coder 480B' },
 ];
 
 class ChatService {

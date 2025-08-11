@@ -2,7 +2,7 @@ import { Agent } from 'agents';
 import type { Env } from './core-utils';
 import type { ChatState } from './types';
 import { ChatHandler } from './chat';
-import { DEFAULT_MODEL, API_RESPONSES, isValidModel } from './config';
+import { DEFAULT_MODEL, API_RESPONSES } from './config';
 import { createMessage, createStreamResponse, createEncoder } from './utils';
 
 /**
@@ -97,8 +97,8 @@ export class ChatAgent extends Agent<Env, ChatState> {
       }, { status: 400 });
     }
 
-    // Update model if provided and valid
-    if (model && model !== this.state.model && isValidModel(model)) {
+    // Update model if provided
+    if (model && model !== this.state.model) {
       this.setState({ ...this.state, model });
       this.chatHandler?.updateModel(model);
     }
@@ -232,13 +232,6 @@ export class ChatAgent extends Agent<Env, ChatState> {
    */
   private handleModelUpdate(body: { model: string }): Response {
     const { model } = body;
-    
-    if (!isValidModel(model)) {
-      return Response.json({ 
-        success: false, 
-        error: API_RESPONSES.INVALID_MODEL 
-      }, { status: 400 });
-    }
     
     this.setState({ ...this.state, model });
     this.chatHandler?.updateModel(model);
