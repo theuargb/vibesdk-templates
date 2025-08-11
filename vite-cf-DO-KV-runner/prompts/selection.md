@@ -6,6 +6,7 @@ This template provides a minimal but powerful setup for backend heavy projects
     * Backend heavy projects that are suitable for Vite
     * Projects that require server side state persistence (provided via durable objects or Workers KV cache)
     * Projects that require a lot of backend or server-side stuff or database
+    * Projects like file manager dashboards etc
 
 - Do not use it for
     * Static or simple single-page applications

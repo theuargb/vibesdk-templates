@@ -2,7 +2,7 @@ import { Agent } from 'agents';
 import type { Env } from './core-utils';
 import type { ChatState } from './types';
 import { ChatHandler } from './chat';
-import { DEFAULT_MODEL, API_RESPONSES } from './config';
+import { API_RESPONSES } from './config';
 import { createMessage, createStreamResponse, createEncoder } from './utils';
 
 /**
@@ -18,7 +18,7 @@ export class ChatAgent extends Agent<Env, ChatState> {
     messages: [],
     sessionId: crypto.randomUUID(),
     isProcessing: false,
-    model: DEFAULT_MODEL
+    model: 'google-ai-studio/gemini-2.5-flash'
   };
 
   /**

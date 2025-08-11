@@ -1,5 +1,3 @@
-export const DEFAULT_MODEL = 'google-ai-studio/gemini-2.5-flash';
-
 export const API_RESPONSES = {
   MISSING_MESSAGE: 'Message required',
   INVALID_MODEL: 'Invalid model',
