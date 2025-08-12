@@ -18,192 +18,21 @@ jobs:
       with:
         python-version: '3.11'
         
-    - name: Install Python dependencies
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        # No additional dependencies needed for our script
+        npm install -g wrangler
         
-    - name: Generate template catalog
-      run: |
-        python3 generate_template_catalog.py --output template_catalog.json --pretty
-        echo "✅ Generated template catalog"
-        
-    - name: Create optimized zip files for templates
-      run: |
-        echo "📦 Creating optimized zip files for templates..."
-        
-        # Create zips directory
-        mkdir -p zips
-        
-        # Function to create fast-extracting zip files
-        create_template_zip() {
-          local template_dir="$1"
-          local template_name=$(basename "$template_dir")
-          local zip_file="zips/${template_name}.zip"
-          
-          echo "Creating zip for: $template_name"
-          
-          # Create zip with optimal compression settings for fast extraction
-          # -r: recursive, -9: maximum compression, -q: quiet
-          # Store method for small files, deflate for larger ones
-          cd "$template_dir"
-          zip -r -9 -q "../$zip_file" . \
-            -x "node_modules/*" \
-            -x ".git/*" \
-            -x "*.log" \
-            -x ".DS_Store" \
-            -x "dist/*" \
-            -x "build/*" \
-            -x ".next/*" \
-            -x "coverage/*" \
-            -x ".nyc_output/*" \
-            -x "*.tgz" \
-            -x "*.tar.gz"
-          cd ..
-          
-          # Verify the zip file was created
-          if [ -f "$zip_file" ]; then
-            local size=$(du -h "$zip_file" | cut -f1)
-            echo "✅ Created $zip_file ($size)"
-          else
-            echo "❌ Failed to create $zip_file"
-            exit 1
-          fi
-        }
-        
-        # Create zip for each valid template directory
-        for dir in */; do
-          # Skip non-directories and hidden directories
-          if [[ ! -d "$dir" || "$dir" == .* ]]; then
-            continue
-          fi
-          
-          dir_name=$(basename "$dir")
-          
-          # Skip git and other non-template directories
-          if [[ "$dir_name" == ".git" || "$dir_name" == "node_modules" || "$dir_name" == ".github" ]]; then
-            continue
-          fi
-          
-          # Check if it's a valid template (has required files)
-          if [[ -f "$dir/package.json" && (-f "$dir/wrangler.jsonc" || -f "$dir/wrangler.toml") && -d "$dir/prompts" ]]; then
-            create_template_zip "$dir"
-          else
-            echo "⏭️  Skipping $dir_name (not a valid template)"
-          fi
-        done
-        
-        echo "📦 All template zips created successfully"
-        ls -la zips/
-        
-    - name: Configure AWS CLI for R2
-      run: |
-        # Configure AWS CLI for Cloudflare R2 without using STS
-        mkdir -p ~/.aws
-        
-        # Create AWS credentials file
-        cat > ~/.aws/credentials << EOF
-        [default]
-        aws_access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
-        aws_secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
-        EOF
-        
-        # Create AWS config file  
-        cat > ~/.aws/config << EOF
-        [default]
-        region = us-east-1
-        output = json
-        EOF
-        
-        # Verify AWS CLI configuration
-        aws --version
-        echo "✅ AWS CLI configured for R2"
-        
-    - name: Upload files to Cloudflare R2
+    - name: Deploy templates
       env:
-        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
       run: |
-        echo "🚀 Uploading files to Cloudflare R2..."
-        
-        # Set the R2 endpoint
-        export AWS_ENDPOINT_URL="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
-        
-        # Upload template catalog JSON
-        echo "📄 Uploading template catalog..."
-        aws s3 cp template_catalog.json "s3://$R2_BUCKET_NAME/template_catalog.json" \
-          --content-type "application/json" \
-          --cache-control "public, max-age=300" \
-          --metadata "updated=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-        
-        if [ $? -eq 0 ]; then
-          echo "✅ Successfully uploaded template_catalog.json"
-        else
-          echo "❌ Failed to upload template_catalog.json"
-          exit 1
-        fi
-        
-        # Upload all template zip files
-        echo "📦 Uploading template zip files..."
-        for zip_file in zips/*.zip; do
-          if [ -f "$zip_file" ]; then
-            filename=$(basename "$zip_file")
-            echo "Uploading: $filename"
-            
-            aws s3 cp "$zip_file" "s3://$R2_BUCKET_NAME/$filename" \
-              --content-type "application/zip" \
-              --cache-control "public, max-age=3600" \
-              --metadata "updated=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            
-            if [ $? -eq 0 ]; then
-              echo "✅ Successfully uploaded $filename"
-            else
-              echo "❌ Failed to upload $filename"
-              exit 1
-            fi
-          fi
-        done
-        
-        echo "🎉 All files uploaded successfully to R2 bucket: $R2_BUCKET_NAME"
-        
-    - name: Verify uploads
-      env:
-        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-        R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-      run: |
-        echo "🔍 Verifying uploads..."
-        export AWS_ENDPOINT_URL="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
-        
-        # List uploaded files
-        echo "Files in R2 bucket:"
-        aws s3 ls "s3://$R2_BUCKET_NAME/" --recursive --human-readable
-        
-        echo "✅ Upload verification complete"
-        
-    - name: Generate deployment summary
-      run: |
-        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 📋 Template Catalog" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Generated and uploaded \`template_catalog.json\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 📦 Template Archives" >> $GITHUB_STEP_SUMMARY
-        
-        # Count and list zip files
-        zip_count=$(ls zips/*.zip 2>/dev/null | wc -l)
-        echo "- ✅ Created and uploaded $zip_count template zip files:" >> $GITHUB_STEP_SUMMARY
-        
-        for zip_file in zips/*.zip; do
-          if [ -f "$zip_file" ]; then
-            filename=$(basename "$zip_file" .zip)
-            size=$(du -h "$zip_file" | cut -f1)
-            echo "  - \`$filename\` ($size)" >> $GITHUB_STEP_SUMMARY
-          fi
-        done
-        
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 🌐 Access URLs" >> $GITHUB_STEP_SUMMARY
-        echo "- **Catalog**: \`https://${{ secrets.R2_BUCKET_NAME }}.r2.dev/template_catalog.json\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **Templates**: \`https://${{ secrets.R2_BUCKET_NAME }}.r2.dev/templates/[template-name].zip\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "🕐 **Deployed at**: $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+        chmod +x deploy_templates.sh
+        ./deploy_templates.sh

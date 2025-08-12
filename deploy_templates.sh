@@ -1,0 +1,180 @@
+#!/bin/bash
+
+set -euo pipefail
+
+echo "🚀 Starting template deployment process..."
+
+# Generate template catalog
+echo "📋 Generating template catalog..."
+python3 generate_template_catalog.py --output template_catalog.json --pretty
+echo "✅ Generated template catalog"
+
+# Create optimized zip files for templates
+echo "📦 Creating optimized zip files for templates..."
+
+# Create zips directory
+mkdir -p zips
+
+# Function to create fast-extracting zip files
+create_template_zip() {
+  local template_dir="$1"
+  local template_name=$(basename "$template_dir")
+  local zip_file="zips/${template_name}.zip"
+  
+  echo "Creating zip for: $template_name"
+  
+  # Create zip with optimal compression settings for fast extraction
+  # -r: recursive, -9: maximum compression, -q: quiet
+  # Store method for small files, deflate for larger ones
+  cd "$template_dir"
+  zip -r -9 -q "../$zip_file" . \
+    -x "node_modules/*" \
+    -x ".git/*" \
+    -x "*.log" \
+    -x ".DS_Store" \
+    -x "dist/*" \
+    -x "build/*" \
+    -x ".next/*" \
+    -x "coverage/*" \
+    -x ".nyc_output/*" \
+    -x "*.tgz" \
+    -x "*.tar.gz"
+  cd ..
+  
+  # Verify the zip file was created
+  if [ -f "$zip_file" ]; then
+    local size=$(du -h "$zip_file" | cut -f1)
+    echo "✅ Created $zip_file ($size)"
+  else
+    echo "❌ Failed to create $zip_file"
+    exit 1
+  fi
+}
+
+# Create zip for each valid template directory in parallel
+pids=()
+for dir in */; do
+  # Skip non-directories and hidden directories
+  if [[ ! -d "$dir" || "$dir" == .* ]]; then
+    continue
+  fi
+  
+  dir_name=$(basename "$dir")
+  
+  # Skip git and other non-template directories
+  if [[ "$dir_name" == ".git" || "$dir_name" == "node_modules" || "$dir_name" == ".github" ]]; then
+    continue
+  fi
+  
+  # Check if it's a valid template (has required files)
+  if [[ -f "$dir/package.json" && (-f "$dir/wrangler.jsonc" || -f "$dir/wrangler.toml") && -d "$dir/prompts" ]]; then
+    create_template_zip "$dir" &
+    pids+=($!)
+  else
+    echo "⏭️  Skipping $dir_name (not a valid template)"
+  fi
+done
+
+# Wait for all zip creation processes to complete
+echo "⏳ Waiting for all zip creation processes to complete..."
+for pid in "${pids[@]}"; do
+  wait "$pid"
+done
+
+echo "📦 All template zips created successfully"
+ls -la zips/
+
+# Verify Wrangler CLI is available
+echo "⚙️  Verifying Wrangler CLI..."
+wrangler --version
+echo "✅ Wrangler CLI ready"
+
+# Upload files to Cloudflare R2
+echo "🚀 Uploading files to Cloudflare R2..."
+
+# Function to upload a file to R2
+upload_to_r2() {
+  local file_path="$1"
+  local r2_key="$2"
+  local description="$3"
+  
+  echo "Uploading: $description"
+  if wrangler r2 object put "${R2_BUCKET_NAME}/$r2_key" --file="$file_path" --remote; then
+    echo "✅ Successfully uploaded $description"
+    return 0
+  else
+    echo "❌ Failed to upload $description"
+    return 1
+  fi
+}
+
+# Upload template catalog JSON and all zip files in parallel
+echo "📄📦 Uploading template catalog and zip files in parallel..."
+upload_pids=()
+failed_uploads=()
+
+# Start catalog upload in background
+upload_to_r2 "template_catalog.json" "template_catalog.json" "template_catalog.json" &
+upload_pids+=($!)
+
+# Start zip file uploads in background
+for zip_file in zips/*.zip; do
+  if [ -f "$zip_file" ]; then
+    filename=$(basename "$zip_file")
+    upload_to_r2 "$zip_file" "$filename" "$filename" &
+    upload_pids+=($!)
+  fi
+done
+
+# Wait for all uploads to complete and check for failures
+echo "⏳ Waiting for all uploads to complete..."
+for pid in "${upload_pids[@]}"; do
+  if ! wait "$pid"; then
+    failed_uploads+=("Upload process $pid failed")
+  fi
+done
+
+# Check if any uploads failed
+if [ ${#failed_uploads[@]} -gt 0 ]; then
+  echo "❌ Some uploads failed:"
+  for failure in "${failed_uploads[@]}"; do
+    echo "  - $failure"
+  done
+  exit 1
+fi
+
+echo "🎉 All files uploaded successfully to R2 bucket: ${R2_BUCKET_NAME}"
+
+# Skip verification as wrangler doesn't have a list command
+echo "✅ All uploads completed successfully"
+
+# Generate deployment summary for GitHub Actions
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+  echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+  echo "" >> $GITHUB_STEP_SUMMARY
+  echo "### 📋 Template Catalog" >> $GITHUB_STEP_SUMMARY
+  echo "- ✅ Generated and uploaded \`template_catalog.json\`" >> $GITHUB_STEP_SUMMARY
+  echo "" >> $GITHUB_STEP_SUMMARY
+  echo "### 📦 Template Archives" >> $GITHUB_STEP_SUMMARY
+  
+  # Count and list zip files
+  zip_count=$(ls zips/*.zip 2>/dev/null | wc -l)
+  echo "- ✅ Created and uploaded $zip_count template zip files:" >> $GITHUB_STEP_SUMMARY
+  
+  for zip_file in zips/*.zip; do
+    if [ -f "$zip_file" ]; then
+      filename=$(basename "$zip_file" .zip)
+      size=$(du -h "$zip_file" | cut -f1)
+      echo "  - \`$filename\` ($size)" >> $GITHUB_STEP_SUMMARY
+    fi
+  done
+  
+  echo "" >> $GITHUB_STEP_SUMMARY
+  echo "### 🌐 Access URLs" >> $GITHUB_STEP_SUMMARY
+  echo "- **Catalog**: \`https://${R2_BUCKET_NAME}.r2.dev/template_catalog.json\`" >> $GITHUB_STEP_SUMMARY
+  echo "- **Templates**: \`https://${R2_BUCKET_NAME}.r2.dev/[template-name].zip\`" >> $GITHUB_STEP_SUMMARY
+  echo "" >> $GITHUB_STEP_SUMMARY
+  echo "🕐 **Deployed at**: $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+fi
+
+echo "🎯 Template deployment completed successfully!"
