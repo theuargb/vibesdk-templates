@@ -330,11 +330,11 @@ def main() -> None:
         log_info(f"Output saved to: {output_file}")
         
         # Display the generated JSON if outputting to terminal
-        if sys.stdout.isatty():
-            print("\nGenerated catalog:")
-            with open(output_file, 'r', encoding='utf-8') as f:
-                catalog_data = json.load(f)
-            print(json.dumps(catalog_data, indent=2, ensure_ascii=False))
+        # if sys.stdout.isatty():
+        #     print("\nGenerated catalog:")
+        #     with open(output_file, 'r', encoding='utf-8') as f:
+        #         catalog_data = json.load(f)
+            # print(json.dumps(catalog_data, indent=2, ensure_ascii=False))
             
     except Exception as e:
         log_error(f"Failed to write output file: {e}")
