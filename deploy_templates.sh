@@ -15,7 +15,7 @@ echo "📦 Creating optimized zip files for templates..."
 # Create zips directory
 mkdir -p zips
 
-# Function to create fast-extracting zip files
+# Function to create fast-extracting zip files using Python
 create_template_zip() {
   local template_dir="$1"
   local template_name=$(basename "$template_dir")
@@ -23,31 +23,19 @@ create_template_zip() {
   
   echo "Creating zip for: $template_name"
   
-  # Create zip with optimal compression settings for fast extraction
-  # -r: recursive, -9: maximum compression, -q: quiet
-  # Store method for small files, deflate for larger ones
-  cd "$template_dir"
-  zip -r -9 -q "../$zip_file" . \
-    -x "node_modules/*" \
-    -x ".git/*" \
-    -x "*.log" \
-    -x ".DS_Store" \
-    -x "dist/*" \
-    -x "build/*" \
-    -x ".next/*" \
-    -x "coverage/*" \
-    -x ".nyc_output/*" \
-    -x "*.tgz" \
-    -x "*.tar.gz"
-  cd ..
-  
-  # Verify the zip file was created
-  if [ -f "$zip_file" ]; then
-    local size=$(du -h "$zip_file" | cut -f1)
-    echo "✅ Created $zip_file ($size)"
+  # Use Python script to create zip (compatible with environments without zip command)
+  if python3 create_zip.py "$template_dir" "$zip_file"; then
+    # Verify the zip file was created
+    if [ -f "$zip_file" ]; then
+      local size=$(du -h "$zip_file" | cut -f1)
+      echo "✅ Created $zip_file ($size)"
+    else
+      echo "❌ Failed to create $zip_file"
+      return 1
+    fi
   else
-    echo "❌ Failed to create $zip_file"
-    exit 1
+    echo "❌ Failed to create $zip_file using Python"
+    return 1
   fi
 }
 
