@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "vite-cf-do-kv-runner",
+	"name": "test-project",
 	"main": "worker/index.ts",
 	"compatibility_date": "2025-04-24",
 	"assets": {
@@ -29,7 +29,7 @@
     "kv_namespaces": [
       {
         "binding": "KVStore",
-        "id": "vite-cf-do-kv-runner"
+        "id": "{{KV_ID}}"
       }
     ]
 	/**
