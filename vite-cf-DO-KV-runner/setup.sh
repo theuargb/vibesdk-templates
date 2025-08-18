@@ -4,6 +4,17 @@
 # Usage: ./setup.sh <new-project-name>
 
 set -e  # Exit on any error
+
+# Check if project name argument is provided
+if [ $# -eq 0 ]; then
+    echo "Error: Please provide a project name as the first argument"
+    echo "Usage: $0 <new-project-name>"
+    exit 1
+fi
+
+NEW_PROJECT_NAME="$1"
+echo "Creating KV namespace for project: $NEW_PROJECT_NAME"
+
 # Create KV namespace and extract ID
 echo "Creating KV namespace..."
 WRANGLER_OUTPUT=$(bunx wrangler kv namespace create "$NEW_PROJECT_NAME" 2>&1)
