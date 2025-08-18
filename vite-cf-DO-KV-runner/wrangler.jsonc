@@ -29,7 +29,7 @@
     "kv_namespaces": [
       {
         "binding": "KVStore",
-        "id": "KVStore"
+        "id": "vite-cf-do-kv-runner"
       }
     ]
 	/**

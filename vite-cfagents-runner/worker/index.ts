@@ -6,7 +6,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { Env } from "./core-utils";
-import { SUPPORTED_MODELS, API_RESPONSES } from "./config";
+import { API_RESPONSES } from "./config";
 import { userRoutes, coreRoutes } from "./userRoutes";
 import { ChatAgent } from "./agent";
 import { AppController } from "./app-controller";
@@ -50,7 +50,6 @@ app.get("/api/health", (c) =>
     data: {
       status: "healthy",
       timestamp: new Date().toISOString(),
-      models: SUPPORTED_MODELS,
     },
   })
 );

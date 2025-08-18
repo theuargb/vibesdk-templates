@@ -6,6 +6,8 @@ The chat API is powered by Cloudflare Agents (Which is a wrapper on Durable Obje
 
 The agent system uses Durable Objects for persistent state management and conversation history. `/api/chat/:sessionId/*` should be used without modifications for any conversation support. There is also a control plane durable object for session management name AppController.
 
+There are already several models presupplied with the template along with proper configuration (apikeys and base url). You should develop using them instead of adding mock methods.
+
 - Built with:
   * **React + Vite** for fast frontend development with hot module replacement
   * **Cloudflare Agents SDK** for stateful agent management with persistent Durable Objects
@@ -70,7 +72,7 @@ The agent system uses Durable Objects for persistent state management and conver
   * **`worker/chat.ts`**: OpenAI integration and conversation logic  
   * **`worker/mcp-client.ts`**: MCP client for real server integration
   * **`worker/tools.ts`**: Tool routing and MCP server coordination
-  * **`worker/config.ts`**: Centralized configuration and supported models
+  * **`worker/config.ts`**: Centralized configuration
   * **`worker/types.ts`**: TypeScript interfaces and type definitions
   * **`worker/app-controller.ts`**: Control plane durable object for session management
 
