@@ -38,7 +38,7 @@ class ChatService {
       const response = await fetch(`${this.baseUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, model, stream: !!onChunk })
+        body: JSON.stringify({ message, model, stream: !!onChunk }),
       });
       
       if (!response.ok) {

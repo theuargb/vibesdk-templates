@@ -123,4 +123,10 @@ Usage Example:
         }
 ```
 
-The backend routes (worker logic) are defined in the `worker/index.ts` file. For any server-side processing, define appropriate routes, types and controllers in the worker, **BUT BE CAREFUL** You can easily break everything so make sure you follow the **exact** pattern in the worker file to add any new routes
+The backend routes (worker logic) are defined in the `worker/index.ts` file. 
+For any server-side processing, define appropriate routes, types and controllers in the worker, **BUT BE CAREFUL** You can easily break everything so make sure you follow the **exact** pattern in the worker file to add any new routes
+
+# Available bindings:
+**Only The following bindings are to be used in the project! Do not use any other bindings or remove/replace any of the bindings**
+- `GlobalDurableObject`: A durable object binding for the global durable object
+- `KVStore`: A KV namespace binding for the global durable object

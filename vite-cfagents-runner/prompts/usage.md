@@ -168,3 +168,8 @@ tooltip.tsx
 
 # Important Notes
 - Conversations and persistence are already handled by the template. Utilize existing utilities and apis to build something greater.
+
+# Available bindings:
+**Only The following bindings are to be used in the project! Do not use any other bindings or remove/replace any of the bindings**
+- `CHAT_AGENT`: A durable object binding for the chat agent
+- `APP_CONTROLLER`: A durable object binding for the app controller

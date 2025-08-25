@@ -1,10 +1,9 @@
-import type { AppController } from './app-controller';
-import type { ChatAgent } from './agent';
-
 /**
  * Core utilities for the Cloudflare Agents template
- * DO NOT MODIFY THIS FILE - Hidden from AI to prevent breaking core functionality
+ * STRICTLY DO NOT MODIFY THIS FILE - Hidden from AI to prevent breaking core functionality
  */
+import type { AppController } from './app-controller';
+import type { ChatAgent } from './agent';
 export interface Env {
     CF_AI_BASE_URL: string;
     CF_AI_API_KEY: string;
