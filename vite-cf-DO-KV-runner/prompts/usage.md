@@ -1,33 +1,38 @@
-# Usage instructions
+# AI Development Guidelines
 
-- Built with
-    * React Router 6 for declarative client-side routing
-    * ShadCN UI (v2.3.0) for customizable and accessible UI components built on Radix UI primitives
-    * Tailwind CSS for utility-first styling
-    * Lucide Icons (React) for modern and lightweight iconography
-    * ESLint with sensible defaults and TypeScript support
-    * Cloudflare Workers for serving and server-side processing
-    * Durable Objects for server-side state persistence
-    * Workers KV for server-side state persistence
+## Architecture Overview
+This is a **Cloudflare Workers** template with React frontend, demonstrating:
+- **Frontend**: React Router 6 with TypeScript and ShadCN UI
+- **Backend**: Hono-based Worker with Durable Objects + KV storage
+- **Shared Types**: Type-safe APIs with mock data fallback system
 
-- Restrictions:
-  * When including `tailwind.config.js`, **hardcode custom colors** directly in the config file – do **not** define them in `index.css` unless specified
+## ⚠️ IMPORTANT: Demo Content
+**The existing demo pages, mock data, and API endpoints are FOR TEMPLATE UNDERSTANDING ONLY.**
+- Replace `HomePage.tsx` and `DemoPage.tsx` with actual application pages
+- Remove or replace mock data in `shared/mock-data.ts` with real data structures
+- Remove or replace demo API endpoints (`/api/demo`, `/api/seed`) and implement actual business logic
+- The counter example is just to show DO patterns - replace with real functionality
 
-- Styling:
-  * Must generate **fully responsive** and accessible layouts
-  * Use Shadcn preinstalled components rather than writing custom ones when possible
-  * Use **Tailwind's spacing, layout, and typography utilities** for all custom components
+## Tech Stack
+- React Router 6 for client-side routing
+- ShadCN UI (v2.3.0) built on Radix UI primitives
+- Tailwind CSS for styling
+- Lucide Icons for iconography
+- Hono framework for Workers API
+- TypeScript with shared interfaces
 
-- Components
-  * All Shadcn components are available and can be imported from @/components/ui/...
-  * Do not write custom components if shadcn components are available
-  * Icons from Lucide should be imported directly from `lucide-react`
+## Development Restrictions
+- **Tailwind Colors**: Hardcode custom colors in `tailwind.config.js`, NOT in `index.css`
+- **Components**: Use existing ShadCN components instead of writing custom ones
+- **Icons**: Import from `lucide-react` directly
+- **Error Handling**: ErrorBoundary components are pre-implemented
+- **Worker Patterns**: Follow exact patterns in `worker/index.ts` to avoid breaking functionality
 
-**NOTE: ErrorBoundary and related Error handling components and code are already implemented but hidden**
-
-- Animation:
-  * Use `framer-motion`'s `motion` components to animate sections on scroll or page load
-  * You can integrate variants and transitions using Tailwind utility classes alongside motion props
+## Styling Guidelines
+- Generate **fully responsive** and accessible layouts
+- Use ShadCN preinstalled components when available
+- Use Tailwind's spacing, layout, and typography utilities
+- Integrate `framer-motion` for animations with Tailwind classes
 
 Components available:
 ```sh
@@ -81,80 +86,57 @@ toggle.tsx
 tooltip.tsx
 ```
 
-Usage Example:
-```tsx file="example.tsx"
-        import { Button } from '@/components/ui/button'
-        import { CardContent, Card } from '@/components/ui/card'
-        import { MousePointerClickIcon } from 'lucide-react';
-        // custom hook for example ignore
-        import { useStopwatch } from '../hooks/useStopwatch'
+## Code Organization
 
-        export function Stopwatch({ initialTime = 0 }) {
-        const { time, isRunning, start, pause, reset } = useStopwatch(initialTime);
+### Frontend Structurew
+- `src/pages/HomePage.tsx` - Homepage for user to see while you are working on the app
+- `src/pages/DemoPage.tsx` - Main demo showcasing KV + DO features
+- `src/components/ThemeToggle.tsx` - Theme switching component
+- `src/hooks/useTheme.ts` - Theme management hook
 
-        return (
-          <Card className="w-full max-w-md">
-            <CardContent className="flex flex-col items-center justify-center gap-4 p-4">
-              <div 
-                className="text-6xl font-bold tabular-nums" 
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {time}
-              </div>
-              <div className="flex gap-4">
-                <Button 
-                  onClick={isRunning ? pause : start}
-                  aria-pressed={isRunning}
-                >
-                  <MousePointerClickIcon className="text-yellow-400 size-4" />
-                  {isRunning ? 'Pause' : 'Start'}
-                </Button>
-                <Button 
-                  onClick={reset}
-                  disabled={time === 0 && !isRunning}
-                >
-                  Reset
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )
-        }
+### Backend Structure  
+- `worker/index.ts` - Main Worker entry point (**DO NOT MODIFY core patterns**)
+- `worker/userRoutes.ts` - Add new API routes here following existing patterns
+- `worker/durableObject.ts` - DO implementation (counter with increment/decrement)
+- `worker/core-utils.ts` - Core types and utilities (**DO NOT MODIFY**)
+
+### Shared Code
+- `shared/types.ts` - TypeScript interfaces for API responses and data models
+- `shared/mock-data.ts` - **DEMO ONLY** - Replace with real data structures
+- `shared/seed-utils.ts` - **DEMO ONLY** - Remove when implementing real data sources
+
+## API Patterns
+
+### Adding New Endpoints
+Follow this exact pattern in `worker/userRoutes.ts`:
+```typescript
+// KV endpoint with mock fallback
+app.get('/api/my-data', async (c) => {
+  const items = await c.env.KVStore.get('my_key');
+  const data: MyType[] = items ? JSON.parse(items) : MOCK_FALLBACK;
+  return c.json({ success: true, data } satisfies ApiResponse<MyType[]>);
+});
+
+// Durable Object endpoint
+app.post('/api/counter/action', async (c) => {
+  const stub = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
+  const data = await stub.myMethod() as number;
+  return c.json({ success: true, data } satisfies ApiResponse<number>);
+});
 ```
 
-The backend routes (worker logic) are defined in the `worker/index.ts` file. 
-For any server-side processing, define appropriate routes, types and controllers in the worker, **BUT BE CAREFUL** You can easily break everything so make sure you follow the **exact** pattern in the worker file to add any new routes
+### Type Safety Requirements
+- All API responses must use `ApiResponse<T>` interface
+- Share types between frontend and backend via `shared/types.ts`
+- Mock data must match TypeScript interfaces exactly
 
-# Simple Demo Template
+## Available Bindings
+**CRITICAL**: Only use these Cloudflare bindings:
+- `GlobalDurableObject` - Durable object for stateful operations
+- `KVStore` - KV namespace for data persistence
 
-This template demonstrates basic **Cloudflare Workers** patterns with:
-- **Frontend**: React with routing (`/` and `/demo`)
-- **Backend**: Type-safe APIs with mock data fallback
-- **Storage**: KV for persistence + Durable Objects for counters
-
-## Mock Data System
-
-### Quick Setup
-1. **Seed storage**: `POST /api/seed` (populates KV with simple demo data)
-
-### Demo API Endpoints
-- `GET /api/demo` - Simple items (KV → fallback to mock)
-- `GET /api/counter` - Durable Object counter
-- `POST /api/counter/increment` - Increment DO counter
-
-### Minimal Files
-- `shared/types.ts` - Simple interfaces (12 lines)
-- `shared/mock-data.ts` - Basic demo data (12 lines)  
-- `shared/seed-utils.ts` - Type-safe seeding utilities (32 lines)
-
-### Demo Page (`/demo`)
-Simple showcase of:
-- **KV Storage**: Lists demo items with mock fallback
-- **Durable Objects**: Interactive counter with increment button
-- **Type Safety**: Uses shared types for all API responses
-
-# Available bindings:
-**Only The following bindings are to be used in the project! Do not use any other bindings or remove/replace any of the bindings**
-- `GlobalDurableObject`: A durable object binding for the global durable object
-- `KVStore`: A KV namespace binding for the global durable object
+## Frontend Integration
+- Use direct `fetch()` calls to `/api/*` endpoints
+- Handle loading states and errors appropriately  
+- Leverage shared types for type-safe API responses
+- Components should be responsive and use ShadCN UI patterns

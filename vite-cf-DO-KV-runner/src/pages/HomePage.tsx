@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
-export function App() { // Don't touch this exporting, Its a named export
+export function HomePage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
       <ThemeToggle />
@@ -26,12 +26,14 @@ export function App() { // Don't touch this exporting, Its a named export
         </p>
 
         <div className="flex justify-center gap-4">
-          <Button 
-            size="lg"
-            className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
-          >
-            Please wait
-          </Button>
+          <Link to="/demo">
+            <Button 
+              size="lg"
+              className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"
+            >
+              View Demo
+            </Button>
+          </Link>
         </div>
       </div>
 

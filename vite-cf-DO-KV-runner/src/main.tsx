@@ -3,8 +3,8 @@ enableMapSet();
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { App } from './App.tsx' // Its a named export
-import { DemoPage } from '@/components/DemoPage'
+import { HomePage } from '@/pages/HomePage'
+import { DemoPage } from '@/pages/DemoPage'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -15,11 +15,11 @@ import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <HomePage />,
     errorElement: <RouteErrorBoundary />,
   },
   {
-    path: "/demo",
+    path: "/demo", 
     element: <DemoPage />,
     errorElement: <RouteErrorBoundary />,
   },

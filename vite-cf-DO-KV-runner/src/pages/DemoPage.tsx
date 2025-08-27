@@ -3,8 +3,8 @@ import { ArrowLeft, Database, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { ThemeToggle } from './ThemeToggle';
 import type { DemoItem, ApiResponse } from '../../shared/types';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function DemoPage() {
   const [counter, setCounter] = useState<number>(0);

@@ -17,8 +17,8 @@ export async function seedKVStore(kv: KVNamespace): Promise<void> {
 }
 
 export async function isKVSeeded(kv: KVNamespace): Promise<boolean> {
-  const users = await kv.get('users');
-  return users !== null;
+  const items = await kv.get('demo_items');
+  return items !== null;
 }
 
 export async function seedAll(env: Env): Promise<{ kv: boolean }> {
