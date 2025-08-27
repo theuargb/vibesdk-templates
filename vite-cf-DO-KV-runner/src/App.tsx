@@ -1,37 +1,12 @@
-import { useState, useEffect } from 'react'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export function App() { // Don't touch this exporting, Its a named export
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDark]);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 overflow-hidden relative">
-      <Button 
-        onClick={toggleTheme} 
-        variant="ghost"
-        size="icon"
-        className="absolute top-4 right-4 text-2xl hover:scale-110 hover:rotate-12 transition-all duration-200 active:scale-90 z-50"
-      >
-        {isDark ? '☀️' : '🌙'}
-      </Button>
+      <ThemeToggle />
 
       <div className="absolute inset-0 bg-gradient-rainbow opacity-10 dark:opacity-20" />
       
@@ -50,7 +25,7 @@ export function App() { // Don't touch this exporting, Its a named export
           Your application would be ready soon.
         </p>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-4">
           <Button 
             size="lg"
             className="btn-gradient px-8 py-4 text-lg font-semibold hover:-translate-y-0.5 transition-all duration-200"

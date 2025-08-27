@@ -1,34 +1,35 @@
 import { Hono } from "hono";
 import { Env } from './core-utils';
+import { seedAll, isKVSeeded } from '../shared/seed-utils';
+import { MOCK_ITEMS } from '../shared/mock-data';
+import type { DemoItem, ApiResponse } from '../shared/types';
 
 export function userRoutes(app: Hono<{ Bindings: Env }>) {
-    // Add more routes like this. **DO NOT MODIFY CORS OR OVERRIDE ERROR HANDLERS**
-    app.get('/api/test', (c) => c.json({ success: true, data: { name: 'this works' }}));
+    app.get('/api/test', (c) => c.json({ success: true, data: { name: 'CF Workers Demo' }}));
 
-    // Example apis of a counter using durable object
+    // Seed endpoints
+    app.post('/api/seed', async (c) => {
+        const results = await seedAll(c.env);
+        return c.json({ success: true, data: results });
+    });
+
+    // Simple demo endpoint showcasing KV with mock fallback
+    app.get('/api/demo', async (c) => {
+        const items = await c.env.KVStore.get('demo_items');
+        const data: DemoItem[] = items ? JSON.parse(items) : MOCK_ITEMS;
+        return c.json({ success: true, data } satisfies ApiResponse<DemoItem[]>);
+    });
+
+    // Counter using Durable Object
     app.get('/api/counter', async (c) => {
-        const durableObject = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
-        return c.json({ success: true, data: await durableObject.getCounterValue() });
+        const durableObjectStub = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
+        const data = await durableObjectStub.getCounterValue() as number;
+        return c.json({ success: true, data } satisfies ApiResponse<number>);
     });
+    
     app.post('/api/counter/increment', async (c) => {
-        const durableObject = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
-        return c.json({ success: true, data: await durableObject.increment() });
+        const durableObjectStub = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
+        const data = await durableObjectStub.increment() as number;
+        return c.json({ success: true, data } satisfies ApiResponse<number>);
     });
-    app.post('/api/counter/decrement', async (c) => {
-        const durableObject = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
-        return c.json({ success: true, data: await durableObject.decrement() });
-    });
-
-    // Example apis of using KV store
-    app.get('/api/kv', async (c) => {
-        const value = await c.env.KVStore.get("user_data");
-        return c.json({ success: true, data: value });
-    }); 
-    app.post('/api/kv', async (c) => {
-        // Get user data from request body
-        const userData = await c.req.json();
-        // Store user data in KV
-        await c.env.KVStore.put("user_data", JSON.stringify(userData));
-        return c.json({ success: true });
-    }); 
 }

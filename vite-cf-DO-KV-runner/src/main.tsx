@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import { App } from './App.tsx' // Its a named export
+import { DemoPage } from '@/components/DemoPage'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -17,6 +18,11 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <RouteErrorBoundary />,
   },
+  {
+    path: "/demo",
+    element: <DemoPage />,
+    errorElement: <RouteErrorBoundary />,
+  },
 ]);
 
 // Do not touch this code
@@ -27,3 +33,4 @@ createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+   

@@ -126,6 +126,34 @@ Usage Example:
 The backend routes (worker logic) are defined in the `worker/index.ts` file. 
 For any server-side processing, define appropriate routes, types and controllers in the worker, **BUT BE CAREFUL** You can easily break everything so make sure you follow the **exact** pattern in the worker file to add any new routes
 
+# Simple Demo Template
+
+This template demonstrates basic **Cloudflare Workers** patterns with:
+- **Frontend**: React with routing (`/` and `/demo`)
+- **Backend**: Type-safe APIs with mock data fallback
+- **Storage**: KV for persistence + Durable Objects for counters
+
+## Mock Data System
+
+### Quick Setup
+1. **Seed storage**: `POST /api/seed` (populates KV with simple demo data)
+
+### Demo API Endpoints
+- `GET /api/demo` - Simple items (KV → fallback to mock)
+- `GET /api/counter` - Durable Object counter
+- `POST /api/counter/increment` - Increment DO counter
+
+### Minimal Files
+- `shared/types.ts` - Simple interfaces (12 lines)
+- `shared/mock-data.ts` - Basic demo data (12 lines)  
+- `shared/seed-utils.ts` - Type-safe seeding utilities (32 lines)
+
+### Demo Page (`/demo`)
+Simple showcase of:
+- **KV Storage**: Lists demo items with mock fallback
+- **Durable Objects**: Interactive counter with increment button
+- **Type Safety**: Uses shared types for all API responses
+
 # Available bindings:
 **Only The following bindings are to be used in the project! Do not use any other bindings or remove/replace any of the bindings**
 - `GlobalDurableObject`: A durable object binding for the global durable object
