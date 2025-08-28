@@ -22,9 +22,9 @@ export default defineConfig({
   },
   server: {
     allowedHosts: true,
-    warmup: {
-      clientFiles: ['./src/components/ui/*.tsx', './src/*.tsx'],
-    },
+    // warmup: {
+    //   clientFiles: ['./src/components/ui/*.tsx', './src/*.tsx'],
+    // },
   },
   resolve: {
     alias: {
@@ -36,9 +36,12 @@ export default defineConfig({
     // is executed to when the server is actually ready.
     include: ['react', 'react-dom', 'react-router-dom'],
     exclude: ['agents'], // Exclude agents package from pre-bundling due to Node.js dependencies
+    force: true,
   },
   define: {
     // Define Node.js globals for the agents package
     global: 'globalThis',
   },
+  // Clear cache more aggressively
+  cacheDir: 'node_modules/.vite'
 })
