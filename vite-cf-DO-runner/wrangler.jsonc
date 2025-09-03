@@ -1,5 +1,5 @@
 /**
- * Wrangler config for the Cloudflare Durable Object and KV template
+ * Wrangler config for the Cloudflare Durable Object template
  * STRICTLY DO NOT MODIFY THIS FILE - Hidden from AI to prevent breaking core functionality
  */
  {
@@ -28,12 +28,6 @@
         "new_sqlite_classes": [
           "GlobalDurableObject"
         ]
-      }
-    ],
-    "kv_namespaces": [
-      {
-        "binding": "KVStore",
-        "id": "{{KV_ID}}"
       }
     ]
 }

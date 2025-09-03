@@ -1,12 +1,13 @@
 # Template Selection Guidelines
 
-This template provides a minimal but powerful setup for backend heavy projects
+This template provides a minimal but powerful setup for backend heavy projects with Durable Object persistence
 
 - Use this template when you need:
     * Backend heavy projects that are suitable for Vite
-    * Projects that require server side state persistence (provided via durable objects or Workers KV cache)
+    * Projects that require server side state persistence (provided via Durable Objects)
     * Projects that require a lot of backend or server-side stuff or database
-    * Projects like file manager dashboards etc
+    * Projects like file manager dashboards, real-time applications, or stateful services
+    * Cost-effective persistence without KV namespace expenses
 
 - Do not use it for
     * Static or simple single-page applications
@@ -22,6 +23,5 @@ This template provides a minimal but powerful setup for backend heavy projects
     * Vite for ultra-fast local development and builds
     * Cloudflare Workers for server-side processing
     * Durable Objects for server-side state persistence
-    * Workers KV for server-side state persistence
 
 

@@ -116,3 +116,12 @@ The vite-cfagents-runner template includes a transparent JSON-based runtime erro
 - Unhandled promise rejections → JSON error logs
 
 **Implementation**: Core logic in `worker/core-utils.ts` (hidden from AI), client initialization in `src/lib/clientErrorLogger.ts`, auto-imported in `src/main.tsx`. Completely transparent - no application code changes required.
+
+## Important Notes
+- Always **strictly** follow DRY principles
+- Keep code quality high and maintainability in mind
+- Always research and understand the codebase before making changes
+- Never use 'any' type. If you see 'any', Find the proper appropriate type in the project and then replace it. If nothing is found, then write a type for it. 
+- Never use dynamic imports. If you see dynamic imports, Correct it!
+- Implement everything the 'right' and 'correct' way instead of 'fast' and 'quick'.
+- Don't add comments for explaining your changes to me. Comments should be professional, to the point and should be there to explain the code, not your changes

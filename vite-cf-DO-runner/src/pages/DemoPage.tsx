@@ -51,21 +51,21 @@ export function DemoPage() {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold">Workers Demo</h1>
-          <p className="text-muted-foreground">Simple showcase of KV + DO + Mock Data</p>
+          <p className="text-muted-foreground">Simple showcase of Durable Object persistence</p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* KV Demo */}
+          {/* Durable Object Storage Demo */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Database className="h-5 w-5 text-blue-500" />
-                KV Storage Demo
+                Durable Object Storage
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Data from KV store with mock fallback:
+                Persistent data stored in Durable Object:
               </p>
               {demoItems.map((item) => (
                 <div key={item.id} className="flex justify-between items-center p-2 border rounded">
@@ -76,7 +76,7 @@ export function DemoPage() {
             </CardContent>
           </Card>
 
-          {/* DO Demo */}
+          {/* Counter Demo */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

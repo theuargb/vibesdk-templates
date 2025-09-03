@@ -3,15 +3,15 @@
 ## Architecture Overview
 This is a **Cloudflare Workers** template with React frontend, demonstrating:
 - **Frontend**: React Router 6 with TypeScript and ShadCN UI
-- **Backend**: Hono-based Worker with Durable Objects + KV storage
-- **Shared Types**: Type-safe APIs with mock data fallback system
+- **Backend**: Hono-based Worker with Durable Objects for all persistence
+- **Shared Types**: Type-safe APIs with automatic data initialization
 
 ## ⚠️ IMPORTANT: Demo Content
 **The existing demo pages, mock data, and API endpoints are FOR TEMPLATE UNDERSTANDING ONLY.**
 - Replace `HomePage.tsx` and `DemoPage.tsx` with actual application pages
 - Remove or replace mock data in `shared/mock-data.ts` with real data structures
-- Remove or replace demo API endpoints (`/api/demo`, `/api/seed`) and implement actual business logic
-- The counter example is just to show DO patterns - replace with real functionality
+- Remove or replace demo API endpoints (`/api/demo`, `/api/counter`) and implement actual business logic
+- The counter and demo items examples show DO patterns - replace with real functionality
 
 ## Tech Stack
 - React Router 6 for client-side routing
@@ -27,6 +27,7 @@ This is a **Cloudflare Workers** template with React frontend, demonstrating:
 - **Icons**: Import from `lucide-react` directly
 - **Error Handling**: ErrorBoundary components are pre-implemented
 - **Worker Patterns**: Follow exact patterns in `worker/index.ts` to avoid breaking functionality
+- **CRITICAL**: You CANNOT modify `wrangler.jsonc` - only use the single `GlobalDurableObject` binding
 
 ## Styling Guidelines
 - Generate **fully responsive** and accessible layouts
@@ -88,16 +89,16 @@ tooltip.tsx
 
 ## Code Organization
 
-### Frontend Structurew
+### Frontend Structure
 - `src/pages/HomePage.tsx` - Homepage for user to see while you are working on the app
-- `src/pages/DemoPage.tsx` - Main demo showcasing KV + DO features
+- `src/pages/DemoPage.tsx` - Main demo showcasing Durable Object features
 - `src/components/ThemeToggle.tsx` - Theme switching component
 - `src/hooks/useTheme.ts` - Theme management hook
 
 ### Backend Structure  
 - `worker/index.ts` - Main Worker entry point (**DO NOT MODIFY core patterns**)
 - `worker/userRoutes.ts` - Add new API routes here following existing patterns
-- `worker/durableObject.ts` - DO implementation (counter with increment/decrement)
+- `worker/durableObject.ts` - DO implementation with counter and demo items storage
 - `worker/core-utils.ts` - Core types and utilities (**DO NOT MODIFY**)
 
 ### Shared Code
@@ -110,33 +111,69 @@ tooltip.tsx
 ### Adding New Endpoints
 Follow this exact pattern in `worker/userRoutes.ts`:
 ```typescript
-// KV endpoint with mock fallback
+// Durable Object endpoint for data retrieval
 app.get('/api/my-data', async (c) => {
-  const items = await c.env.KVStore.get('my_key');
-  const data: MyType[] = items ? JSON.parse(items) : MOCK_FALLBACK;
+  const stub = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
+  const data = await stub.getMyData();
   return c.json({ success: true, data } satisfies ApiResponse<MyType[]>);
 });
 
-// Durable Object endpoint
-app.post('/api/counter/action', async (c) => {
+// Durable Object endpoint for data modification
+app.post('/api/my-data', async (c) => {
+  const body = await c.req.json() as MyType;
   const stub = c.env.GlobalDurableObject.get(c.env.GlobalDurableObject.idFromName("global"));
-  const data = await stub.myMethod() as number;
-  return c.json({ success: true, data } satisfies ApiResponse<number>);
+  const data = await stub.addMyData(body);
+  return c.json({ success: true, data } satisfies ApiResponse<MyType[]>);
 });
+```
+
+### Durable Object Methods Pattern
+Add methods to `GlobalDurableObject` class in `worker/durableObject.ts`:
+```typescript
+async getMyData(): Promise<MyType[]> {
+  const items = await this.ctx.storage.get("my_data_key");
+  if (items) {
+    return items as MyType[];
+  }
+  // Initialize with default data if not exists
+  const defaultData = DEFAULT_MY_DATA;
+  await this.ctx.storage.put("my_data_key", defaultData);
+  return defaultData;
+}
+
+async addMyData(item: MyType): Promise<MyType[]> {
+  const items = await this.getMyData();
+  const updated = [...items, item];
+  await this.ctx.storage.put("my_data_key", updated);
+  return updated;
+}
 ```
 
 ### Type Safety Requirements
 - All API responses must use `ApiResponse<T>` interface
 - Share types between frontend and backend via `shared/types.ts`
-- Mock data must match TypeScript interfaces exactly
+- All Durable Object methods must have proper return type annotations
 
 ## Available Bindings
-**CRITICAL**: Only use these Cloudflare bindings:
-- `GlobalDurableObject` - Durable object for stateful operations
-- `KVStore` - KV namespace for data persistence
+**CRITICAL**: Only use this Cloudflare binding:
+- `GlobalDurableObject` - Single Durable object for ALL stateful operations
+
+**YOU CANNOT**:
+- Modify `wrangler.jsonc` 
+- Add new Durable Objects or KV namespaces
+- Change binding names or add new bindings
+
+## Durable Object Storage Patterns
+- Use unique storage keys for different data types (e.g., "counter_value", "demo_items", "user_data")
+- Always initialize data on first access using the pattern shown above
+- Store complex objects directly - Durable Object storage handles serialization
+- Use atomic operations for data consistency
 
 ## Frontend Integration
 - Use direct `fetch()` calls to `/api/*` endpoints
 - Handle loading states and errors appropriately  
 - Leverage shared types for type-safe API responses
 - Components should be responsive and use ShadCN UI patterns
+
+## Cost Optimization
+This template uses only Durable Objects for persistence, avoiding KV namespace costs while maintaining full data persistence and consistency.
