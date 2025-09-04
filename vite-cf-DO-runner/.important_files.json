@@ -12,6 +12,9 @@
     "src/index.css",
     "src/lib/",
     "src/hooks/",
+    "src/components/ThemeToggle.tsx",
+    "src/lib/utils.ts",
+    "src/pages/",
     "worker/",
     "wrangler.jsonc"
 ]
