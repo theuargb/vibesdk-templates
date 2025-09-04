@@ -1,0 +1,7 @@
+[
+    "wrangler.jsonc",
+    "wrangler.toml",
+    "donttouch_files.json",
+    ".important_files.json",
+    "worker/index.ts"
+]
