@@ -1,7 +1,7 @@
-import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import React from "react";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export interface ErrorFallbackProps {
   title?: string;
@@ -20,7 +20,7 @@ export function ErrorFallback({
   onRetry,
   onGoHome,
   showErrorDetails = true,
-  statusMessage = "Our team has been notified"
+  statusMessage = "Our team has been notified",
 }: ErrorFallbackProps) {
   const handleRetry = () => {
     if (onRetry) {
@@ -34,7 +34,7 @@ export function ErrorFallback({
     if (onGoHome) {
       onGoHome();
     } else {
-      window.location.href = '/';
+      window.location.href = "/";
     }
   };
 
@@ -43,7 +43,7 @@ export function ErrorFallback({
       <div className="w-full max-w-md">
         {/* Animated background gradient */}
         <div className="absolute inset-0 bg-gradient-rainbow opacity-5 dark:opacity-10" />
-        
+
         {/* Error card */}
         <Card className="relative backdrop-blur-sm shadow-2xl">
           <CardContent className="p-8 space-y-6">
@@ -70,24 +70,30 @@ export function ErrorFallback({
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Try Again
               </Button>
-              <Button onClick={handleGoHome} variant="secondary" className="w-full">
+              <Button
+                onClick={handleGoHome}
+                variant="secondary"
+                className="w-full"
+              >
                 <Home className="w-4 h-4 mr-2" />
                 Go to Homepage
               </Button>
             </div>
 
             {/* Error details (collapsible) */}
-            {process.env.NODE_ENV === 'development' && showErrorDetails && error && (
-              <details className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  Error details (Development only)
-                </summary>
-                <pre className="mt-3 text-xs overflow-auto max-h-40 text-muted-foreground">
-                  {error.message || error.toString()}
-                  {error.stack && '\n\n' + error.stack}
-                </pre>
-              </details>
-            )}
+            {process.env.NODE_ENV === "development" &&
+              showErrorDetails &&
+              error && (
+                <details className="mt-6 p-4 bg-muted/50 rounded-lg">
+                  <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                    Error details (Development only)
+                  </summary>
+                  <pre className="mt-3 text-xs overflow-auto max-h-40 text-muted-foreground">
+                    {error.message || error.toString()}
+                    {error.stack && "\n\n" + error.stack}
+                  </pre>
+                </details>
+              )}
           </CardContent>
         </Card>
 

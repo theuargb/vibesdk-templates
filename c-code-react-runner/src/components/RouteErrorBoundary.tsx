@@ -34,6 +34,7 @@ export function RouteErrorBoundary() {
         timestamp: new Date().toISOString(),
         source: 'react-router',
         error: error,
+        level: "error",
       });
     }
   }, [error]);
