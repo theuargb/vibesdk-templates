@@ -4,5 +4,6 @@
     "donttouch_files.json",
     ".important_files.json",
     "worker/index.ts",
-    "worker/core-utils.ts"
+    "worker/core-utils.ts",
+    "src/lib/errorReporter.ts"
 ]
