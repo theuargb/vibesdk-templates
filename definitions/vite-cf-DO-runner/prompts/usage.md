@@ -151,7 +151,7 @@ async addMyData(item: MyType): Promise<MyType[]> {
 
 ### Type Safety Requirements
 - All API responses must use `ApiResponse<T>` interface
-- Share types between frontend and backend via `shared/types.ts`
+- Share types between frontend and backend via `@shared/types.ts`
 - All Durable Object methods must have proper return type annotations
 
 ## Available Bindings

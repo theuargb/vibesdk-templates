@@ -1,5 +1,5 @@
 {
-	"name": "vite-cf-do-runner",
+	"name": "c-code-react-runner",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -46,6 +46,7 @@
 		"@tanstack/react-query": "^5.83.0",
 		"@typescript-eslint/eslint-plugin": "^8.38.0",
 		"@typescript-eslint/parser": "^8.38.0",
+		"@typescript-eslint/typescript-estree": "^8.39.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
@@ -82,7 +83,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "^1.9.4",
-		"@cloudflare/workers-types": "^4.20250807.0",
+		"@cloudflare/workers-types": "^4.20250424.0",
 		"@eslint/js": "^9.22.0",
 		"@types/node": "^22.15.3",
 		"@types/react": "^18.3.1",

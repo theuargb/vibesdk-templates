@@ -2,7 +2,6 @@ name: "vite-cfagents-runner"
 description: "Vite/React application with Cloudflare Agents SDK and MCP support"
 base_reference: "vite-reference"
 
-# Using full overlay; no package patches required
-excludes:
-  - "src/components/ThemeToggle.tsx"
-  - "src/hooks/use-theme.ts"
+# Patch package.json to match original template name
+package_patches:
+  name: "vite-cfagents-runner"

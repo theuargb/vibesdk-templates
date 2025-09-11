@@ -22,13 +22,11 @@ export default defineConfig({
   },
   server: {
     allowedHosts: true,
-    // warmup: {
-    //   clientFiles: ['./src/components/ui/*.tsx', './src/*.tsx'],
-    // },
   },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@shared": path.resolve(__dirname, "./shared"),
     },
   },
   optimizeDeps: {

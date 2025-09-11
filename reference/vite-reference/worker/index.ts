@@ -5,11 +5,25 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import type { ClientErrorReport } from './types';
 import { userRoutes } from './userRoutes';
-import { Bindings } from './types';
+import { Env } from './core-utils';
 
-const app = new Hono<{ Bindings: Bindings }>();
+export interface ClientErrorReport {
+  message: string;
+  url: string;
+  userAgent: string;
+  timestamp: string;
+  stack?: string;
+  componentStack?: string;
+  errorBoundary?: boolean;
+  errorBoundaryProps?: Record<string, unknown>;
+  source?: string;
+  lineno?: number;
+  colno?: number;
+  error?: unknown;
+}
+
+const app = new Hono<{ Bindings: Env }>();
 
 app.use('*', logger());
 
@@ -36,4 +50,4 @@ app.onError((err, c) => { console.error(`[ERROR] ${err}`); return c.json({ succe
 
 console.log(`Server is running`)
 
-export default { fetch: app.fetch } satisfies ExportedHandler<Bindings>;
+export default { fetch: app.fetch } satisfies ExportedHandler<Env>;

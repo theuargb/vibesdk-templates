@@ -127,7 +127,7 @@ app.post('/api/counter/action', async (c) => {
 
 ### Type Safety Requirements
 - All API responses must use `ApiResponse<T>` interface
-- Share types between frontend and backend via `shared/types.ts`
+- Share types between frontend and backend via `@shared/types.ts`
 - Mock data must match TypeScript interfaces exactly
 
 ## Available Bindings

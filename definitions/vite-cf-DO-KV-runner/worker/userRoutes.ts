@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { Env } from './core-utils';
-import { seedAll, isKVSeeded } from '../shared/seed-utils';
-import { MOCK_ITEMS } from '../shared/mock-data';
-import type { DemoItem, ApiResponse } from '../shared/types';
+import { seedAll, isKVSeeded } from '@shared/seed-utils';
+import { MOCK_ITEMS } from '@shared/mock-data';
+import type { DemoItem, ApiResponse } from '@shared/types';
 
 export function userRoutes(app: Hono<{ Bindings: Env }>) {
     app.get('/api/test', (c) => c.json({ success: true, data: { name: 'CF Workers Demo' }}));

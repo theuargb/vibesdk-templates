@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
-import type { DemoItem } from '../shared/types';
-import { MOCK_ITEMS } from '../shared/mock-data';
+import type { DemoItem } from '@shared/types';
+import { MOCK_ITEMS } from '@shared/mock-data';
 
 // **DO NOT MODIFY THE CLASS NAME**
 export class GlobalDurableObject extends DurableObject {

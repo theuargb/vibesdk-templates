@@ -10,11 +10,11 @@ import { Textarea } from '@/components/ui/textarea';
 import {Card} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { chatService, formatTime, renderToolCall, generateSessionTitle, MODELS } from './lib/chat';
-import type { ChatState, SessionInfo } from '../worker/types';
+import { chatService, formatTime, renderToolCall, generateSessionTitle, MODELS } from '../lib/chat';
+import type { ChatState, SessionInfo } from '../../worker/types';
 
 
-export function App() { // Don't touch this exporting, Its a named export
+export function DemoPage() { // Don't touch this exporting, Its a named export
   const [isDark, setIsDark] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;

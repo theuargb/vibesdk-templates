@@ -20,7 +20,10 @@
 		"paths": {
 			"@/*": [
 				"./src/*"
-			]
+			],
+            "@shared/*": [
+                "./shared/*"
+            ]
 		},
         "skipLibCheck": true
 	}

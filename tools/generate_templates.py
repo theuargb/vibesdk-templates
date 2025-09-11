@@ -54,6 +54,32 @@ class TemplateGenerator:
         self.definitions_dir = root_dir / "definitions" 
         self.build_dir = root_dir / "build"
         self.originals_dir = root_dir / "originals"
+
+        # DRY ignore patterns used consistently for copy and verify operations
+        # Keep both directory names and recursive forms to support both filtering styles
+        self.DEFAULT_IGNORES: List[str] = [
+            '.DS_Store',
+            '.eslintcache',
+            '.git',
+            '.git/**',
+            'node_modules',
+            'node_modules/*',
+            '.wrangler',
+            '.wrangler/**',
+            'dist',
+            'dist/**',
+            '.next',
+            '.next/**',
+            'coverage',
+            'coverage/**',
+            '.nyc_output',
+            '.nyc_output/**',
+            'bun.lock*',
+            'pnpm-lock.yaml',
+            'yarn.lock',
+            'package-lock.json',
+            'next-env.d.ts',
+        ]
     
     def apply_package_patches(self, target_dir: Path, patches: Dict[str, Any]) -> bool:
         """
@@ -129,8 +155,8 @@ class TemplateGenerator:
             # Create target directory
             target_dir.mkdir(parents=True)
             
-            # Copy reference template
-            shutil.copytree(reference_path, target_dir, dirs_exist_ok=True)
+            # Copy reference template with ignore patterns
+            self.copytree_with_ignores(reference_path, target_dir)
             log_info(f"Copied {reference_name} reference template to {target_dir}")
             return True
             
@@ -173,11 +199,11 @@ class TemplateGenerator:
                         shutil.copy2(src_path, dst_path)
                         log_info(f"Applied template file: {file_pattern}")
                     else:
-                        # Copy directory
+                        # Copy directory (respecting ignore patterns)
                         dst_path = target_dir / file_pattern
                         if dst_path.exists():
                             shutil.rmtree(dst_path)
-                        shutil.copytree(src_path, dst_path)
+                        self.copytree_with_ignores(src_path, dst_path)
                         log_info(f"Applied template directory: {file_pattern}")
             else:
                 # Copy all files from template directory to target (excluding YAML config)
@@ -185,6 +211,9 @@ class TemplateGenerator:
                     root_path = Path(root)
                     rel_root = root_path.relative_to(template_dir)
                     
+                    # Filter ignored directories in-place for performance
+                    dirs[:] = [d for d in dirs if not self._is_ignored(str((root_path / d).relative_to(template_dir)), self.DEFAULT_IGNORES)]
+
                     # Create directories in target
                     target_root = target_dir / rel_root if str(rel_root) != '.' else target_dir
                     target_root.mkdir(parents=True, exist_ok=True)
@@ -197,6 +226,9 @@ class TemplateGenerator:
                         
                         src_file = root_path / file
                         dst_file = target_root / file
+                        rel_file = str(src_file.relative_to(template_dir))
+                        if self._is_ignored(rel_file, self.DEFAULT_IGNORES):
+                            continue
                         
                         # Copy file, overwriting if it exists
                         shutil.copy2(src_file, dst_file)
@@ -313,21 +345,34 @@ class TemplateGenerator:
         return sorted(files)
 
     def _is_ignored(self, rel_path: str, ignores: List[str]) -> bool:
-        default_ignores = [
-            '.DS_Store',
-            '.eslintcache',
-            'node_modules/*',
-            '.wrangler/**',
-            'dist/**',
-            '.next/**',
-            'next-env.d.ts',
-            'bun.lock*',
-            'pnpm-lock.yaml',
-            'yarn.lock',
-            'package-lock.json',
-        ]
-        patterns = default_ignores + (ignores or [])
+        patterns = self.DEFAULT_IGNORES + (ignores or [])
         return any(fnmatch.fnmatch(rel_path, pat) for pat in patterns)
+
+    def copytree_with_ignores(self, src: Path, dst: Path) -> None:
+        """Copy a directory tree while ignoring DEFAULT_IGNORES patterns.
+
+        Uses shutil.copytree with an ignore callable compatible with our glob patterns,
+        keeping a single source of truth for ignore rules.
+        """
+        base = Path(src)
+
+        def _ignore(this_src: str, names: List[str]):  # type: ignore[override]
+            rels: List[str] = []
+            for name in names:
+                p = Path(this_src) / name
+                try:
+                    rel = str(Path(p).relative_to(base))
+                except Exception:
+                    rel = name
+                rels.append(rel)
+            # Decide which names to ignore
+            ignored: List[str] = []
+            for name, rel in zip(names, rels):
+                if self._is_ignored(rel, []):
+                    ignored.append(name)
+            return set(ignored)
+
+        shutil.copytree(src, dst, dirs_exist_ok=True, ignore=_ignore)
 
     def _md5(self, path: Path) -> str:
         h = hashlib.md5()
