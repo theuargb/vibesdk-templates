@@ -278,7 +278,7 @@ def main() -> None:
     parser.add_argument(
         "--directory",
         "-d",
-        default=".",
+        default="./build",
         help="Directory to scan for templates (default: current directory)"
     )
     parser.add_argument(

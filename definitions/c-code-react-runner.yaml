@@ -1,0 +1,9 @@
+name: "c-code-react-runner"
+description: "React/Vite application with Cloudflare Workers integration"
+base_reference: "vite-reference"
+
+# Exclude reference-only files not present in originals
+excludes:
+  - "src/components/ThemeToggle.tsx"
+  - "src/hooks/use-theme.ts"
+  - "src/pages/**"

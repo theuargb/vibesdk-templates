@@ -1,0 +1,5 @@
+name: "vite-cf-DO-runner"
+description: "Vite/React application with Cloudflare Durable Objects"
+base_reference: "vite-reference"
+
+# No patches needed - this is the base template for vite reference

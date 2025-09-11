@@ -4,7 +4,12 @@ set -euo pipefail
 
 echo "🚀 Starting template deployment process..."
 
-# Generate template catalog
+# 1) Generate templates into build/
+echo "🧱 Generating templates into build/..."
+python3 tools/generate_templates.py --clean
+echo "✅ Templates generated"
+
+# 2) Generate template catalog (generate_template_catalog.py now defaults to ./build)
 echo "📋 Generating template catalog..."
 python3 generate_template_catalog.py --output template_catalog.json --pretty
 echo "✅ Generated template catalog"
@@ -39,9 +44,9 @@ create_template_zip() {
   fi
 }
 
-# Create zip for each valid template directory in parallel
+# 3) Create zip for each valid template directory in build/ in parallel
 pids=()
-for dir in */; do
+for dir in build/*/; do
   # Skip non-directories and hidden directories
   if [[ ! -d "$dir" || "$dir" == .* ]]; then
     continue
@@ -49,7 +54,7 @@ for dir in */; do
   
   dir_name=$(basename "$dir")
   
-  # Skip git and other non-template directories
+  # Skip non-template directories if any appear
   if [[ "$dir_name" == ".git" || "$dir_name" == "node_modules" || "$dir_name" == ".github" ]]; then
     continue
   fi
