@@ -6,7 +6,6 @@ This template provides a production-ready AI agent chatbot built with Cloudflare
   * AI chat applications with intelligent tool/function calling capabilities
   * Agent-based chatbots using production Cloudflare MCP servers
   * Cloudflare Workers deployment with Durable Objects persistence
-  * Beautiful, responsive chat UI with tool interaction visualization
   * Multi-model AI support (GPT-4o, Gemini 2.0/2.5, Claude Opus 4)
   * Production-ready MCP integration with official TypeScript SDK
   * Web browsing and tool calling capabilities

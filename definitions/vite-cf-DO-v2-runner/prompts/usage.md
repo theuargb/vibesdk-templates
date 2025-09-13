@@ -3,7 +3,7 @@
 ## Architecture Overview
 This is a **Cloudflare Workers** template with React frontend, demonstrating:
 - **Frontend**: React Router 6 with TypeScript and ShadCN UI
-- **Backend**: Hono-based Worker with a single SQLite-backed Durable Object for all persistence
+- **Backend**: Hono-based Worker with Durable Objects for all persistence
 - **Shared Types**: Type-safe APIs with automatic data initialization
 
 ## ⚠️ IMPORTANT: Demo Content
@@ -97,7 +97,7 @@ tooltip.tsx
 
 ### Backend Structure  
 - `worker/index.ts` - Main Worker entry point (**DO NOT MODIFY core patterns**)
-- `worker/userRoutes.ts` - Add new API routes here following existing patterns
+- `worker/user-routes.ts` - Add new API routes here following existing patterns
 - `worker/durableObject.ts` - DO implementation with counter and demo items storage
 - `worker/core-utils.ts` - Core types and utilities (**DO NOT MODIFY**)
 
@@ -109,7 +109,7 @@ tooltip.tsx
 ## API Patterns
 
 ### Adding New Endpoints
-Follow this exact pattern in `worker/userRoutes.ts`:
+Follow this exact pattern in `worker/user-routes.ts`:
 ```typescript
 // Durable Object endpoint for data retrieval
 app.get('/api/my-data', async (c) => {
@@ -156,7 +156,7 @@ async addMyData(item: MyType): Promise<MyType[]> {
 
 ## Available Bindings
 **CRITICAL**: Only use this Cloudflare binding:
-- `GlobalDurableObject` - Single SQLite-backed Durable object for ALL stateful operations
+- `GlobalDurableObject` - Single Durable object for ALL stateful operations
 
 **YOU CANNOT**:
 - Modify `wrangler.jsonc` 
@@ -174,3 +174,6 @@ async addMyData(item: MyType): Promise<MyType[]> {
 - Handle loading states and errors appropriately  
 - Leverage shared types for type-safe API responses
 - Components should be responsive and use ShadCN UI patterns
+
+## Cost Optimization
+This template uses only Durable Objects for persistence, avoiding KV namespace costs while maintaining full data persistence and consistency.

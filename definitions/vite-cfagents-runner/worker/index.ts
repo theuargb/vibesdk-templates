@@ -1,6 +1,4 @@
-// Making changes to this file is **RISKY**
-// You may create new routes, but do not modify existing routes unless they are marked as **REPLACE**
-// Please follow the existing patterns and structure. For example, do not use `serveStatic` or any such thing that can break the existing functionality.
+// Making changes to this file is **STRICTLY** forbidden. Please add your routes in `userRoutes.ts` file.
 
 import { Hono } from "hono";
 import { cors } from "hono/cors";
