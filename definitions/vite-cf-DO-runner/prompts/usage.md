@@ -1,10 +1,10 @@
-# AI Development Guidelines
+# Usage
 
-## Architecture Overview
-This is a **Cloudflare Workers** template with React frontend, demonstrating:
-- **Frontend**: React Router 6 with TypeScript and ShadCN UI
-- **Backend**: Hono-based Worker with a single SQLite-backed Durable Object for all persistence
-- **Shared Types**: Type-safe APIs with automatic data initialization
+## Overview
+Cloudflare Workers + React. Single global Durable Object (DO) for all persistence and DO features.
+- Frontend: React Router 6 + TypeScript + ShadCN UI
+- Backend: Hono Worker with one DO
+- Shared: Types in `shared/types.ts`
 
 ## ⚠️ IMPORTANT: Demo Content
 **The existing demo pages, mock data, and API endpoints are FOR TEMPLATE UNDERSTANDING ONLY.**
@@ -13,13 +13,8 @@ This is a **Cloudflare Workers** template with React frontend, demonstrating:
 - Remove or replace demo API endpoints (`/api/demo`, `/api/counter`) and implement actual business logic
 - The counter and demo items examples show DO patterns - replace with real functionality
 
-## Tech Stack
-- React Router 6 for client-side routing
-- ShadCN UI (v2.3.0) built on Radix UI primitives
-- Tailwind CSS for styling
-- Lucide Icons for iconography
-- Hono framework for Workers API
-- TypeScript with shared interfaces
+## Tech
+- React Router 6, ShadCN UI, Tailwind, Lucide, Hono, TypeScript
 
 ## Development Restrictions
 - **Tailwind Colors**: Hardcode custom colors in `tailwind.config.js`, NOT in `index.css`
@@ -29,63 +24,9 @@ This is a **Cloudflare Workers** template with React frontend, demonstrating:
 - **Worker Patterns**: Follow exact patterns in `worker/index.ts` to avoid breaking functionality
 - **CRITICAL**: You CANNOT modify `wrangler.jsonc` - only use the single `GlobalDurableObject` binding
 
-## Styling Guidelines
-- Generate **fully responsive** and accessible layouts
-- Use ShadCN preinstalled components when available
-- Use Tailwind's spacing, layout, and typography utilities
-- Integrate `framer-motion` for animations with Tailwind classes
-
-Components available:
-```sh
-$ ls -1 src/components/ui
-accordion.tsx
-alert-dialog.tsx
-alert.tsx
-aspect-ratio.tsx
-avatar.tsx
-badge.tsx
-breadcrumb.tsx
-button.tsx
-calendar.tsx
-card.tsx
-carousel.tsx
-chart.tsx
-checkbox.tsx
-collapsible.tsx
-command.tsx
-context-menu.tsx
-dialog.tsx
-drawer.tsx
-dropdown-menu.tsx
-form.tsx
-hover-card.tsx
-input-otp.tsx
-input.tsx
-label.tsx
-menubar.tsx
-navigation-menu.tsx
-pagination.tsx
-popover.tsx
-progress.tsx
-radio-group.tsx
-resizable.tsx
-scroll-area.tsx
-select.tsx
-separator.tsx
-sheet.tsx
-sidebar.tsx
-skeleton.tsx
-slider.tsx
-sonner.tsx
-switch.tsx
-table.tsx
-tabs.tsx
-textarea.tsx
-toast.tsx
-toggle-group.tsx
-toggle.tsx
-tooltip.tsx
-```
+## Styling
+- Responsive, accessible
+- Prefer ShadCN components; Tailwind for layout/spacing/typography
 
 ## Code Organization
 
@@ -95,21 +36,20 @@ tooltip.tsx
 - `src/components/ThemeToggle.tsx` - Theme switching component
 - `src/hooks/useTheme.ts` - Theme management hook
 
-### Backend Structure  
-- `worker/index.ts` - Main Worker entry point (**DO NOT MODIFY core patterns**)
-- `worker/userRoutes.ts` - Add new API routes here following existing patterns
-- `worker/durableObject.ts` - DO implementation with counter and demo items storage
-- `worker/core-utils.ts` - Core types and utilities (**DO NOT MODIFY**)
+### Backend Structure
+- `worker/index.ts` - Worker entrypoint (registers routes; do not change patterns)
+- `worker/userRoutes.ts` - Add routes here
+- `worker/durableObject.ts` - DO methods (e.g., counter, demo items)
+- `worker/core-utils.ts` - Core types/utilities (do not modify)
 
-### Shared Code
-- `shared/types.ts` - TypeScript interfaces for API responses and data models
-- `shared/mock-data.ts` - **DEMO ONLY** - Replace with real data structures
-- `shared/seed-utils.ts` - **DEMO ONLY** - Remove when implementing real data sources
+### Shared
+- `shared/types.ts` - API/data types
+- `shared/mock-data.ts` - Demo-only; replace
 
 ## API Patterns
 
-### Adding New Endpoints
-Follow this exact pattern in `worker/userRoutes.ts`:
+### Adding Endpoints
+Follow this pattern in `worker/userRoutes.ts`:
 ```typescript
 // Durable Object endpoint for data retrieval
 app.get('/api/my-data', async (c) => {
@@ -149,28 +89,23 @@ async addMyData(item: MyType): Promise<MyType[]> {
 }
 ```
 
-### Type Safety Requirements
-- All API responses must use `ApiResponse<T>` interface
-- Share types between frontend and backend via `@shared/types.ts`
-- All Durable Object methods must have proper return type annotations
+### Type Safety
+- Return `ApiResponse<T>`
+- Share types via `shared/types.ts`
+- DO methods must be typed
 
-## Available Bindings
-**CRITICAL**: Only use this Cloudflare binding:
-- `GlobalDurableObject` - Single SQLite-backed Durable object for ALL stateful operations
+## Bindings
+CRITICAL: only `GlobalDurableObject` is available for stateful ops
 
 **YOU CANNOT**:
 - Modify `wrangler.jsonc` 
 - Add new Durable Objects or KV namespaces
 - Change binding names or add new bindings
+## Storage Patterns
+- Use unique keys per dataset (e.g. `counter_value`, `demo_items`)
+- Initialize data on first access as needed
+- Use atomic operations for consistency
 
-## Durable Object Storage Patterns
-- Use unique storage keys for different data types (e.g., "counter_value", "demo_items", "user_data")
-- Always initialize data on first access using the pattern shown above
-- Store complex objects directly - Durable Object storage handles serialization
-- Use atomic operations for data consistency
-
-## Frontend Integration
-- Use direct `fetch()` calls to `/api/*` endpoints
-- Handle loading states and errors appropriately  
-- Leverage shared types for type-safe API responses
-- Components should be responsive and use ShadCN UI patterns
+## Frontend
+- Call `/api/*` directly
+- Handle loading/errors; use shared types

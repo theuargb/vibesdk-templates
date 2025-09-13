@@ -1,25 +1,17 @@
-# Template Selection Guidelines
+# Template Selection
 
-This template provides a minimal but powerful setup to kickstart a modern React single-page application (SPA).
+Modern React SPA starter.
 
-- Use this template when you need:
-    * Client side heavy projects with lightweight or minimal backend
-    * Static applications 
-    * Dashboards with mostly client side code
-    * Simple, fast projects that are suitable for Vite
+Use when:
+- Client-heavy apps with little/no backend
+- Static apps, dashboards
+- Simple, fast Vite projects
 
-- Do not use it for
-    * Static marketing sites
-    * Landing pages focused on SEO or server-rendered content
-    * Projects that require SSR (Server-Side Rendering)
-    * Projects that require a lot of backend or server-side stuff
+Avoid when:
+- SEO/SSR landing pages
+- Heavy backend/server needs
 
-- Built with
-    * React Router 6 for declarative client-side routing
-    * ShadCN UI (v2.3.0) for customizable and accessible UI components built on Radix UI primitives
-    * Tailwind CSS for utility-first styling
-    * Lucide Icons (React) for modern and lightweight iconography
-    * ESLint with sensible defaults and TypeScript support
-    * Vite for ultra-fast local development and builds
+Built with:
+- React Router, ShadCN UI, Tailwind, Lucide Icons, ESLint, Vite
 
 
