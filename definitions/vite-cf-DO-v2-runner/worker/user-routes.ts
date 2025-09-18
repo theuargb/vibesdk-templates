@@ -9,7 +9,10 @@ export function userRoutes(app: Hono<{ Bindings: Env }>) {
   // USERS
   app.get('/api/users', async (c) => {
     await UserEntity.ensureSeed(c.env);
-    return ok(c, await UserEntity.list(c.env));
+    const cq = c.req.query('cursor');
+    const lq = c.req.query('limit');
+    const page = await UserEntity.list(c.env, cq ?? null, lq ? Math.max(1, (Number(lq) | 0)) : undefined);
+    return ok(c, page);
   });
 
   app.post('/api/users', async (c) => {
@@ -21,8 +24,10 @@ export function userRoutes(app: Hono<{ Bindings: Env }>) {
   // CHATS
   app.get('/api/chats', async (c) => {
     await ChatBoardEntity.ensureSeed(c.env);
-    const boards = await ChatBoardEntity.list(c.env);
-    return ok(c, boards.map((b) => ({ id: b.id, title: b.title })));
+    const cq = c.req.query('cursor');
+    const lq = c.req.query('limit');
+    const page = await ChatBoardEntity.list(c.env, cq ?? null, lq ? Math.max(1, (Number(lq) | 0)) : undefined);
+    return ok(c, page);
   });
 
   app.post('/api/chats', async (c) => {

@@ -22,12 +22,12 @@ export function DemoPage() {
   const usersById = useMemo(() => new Map(users.map(u => [u.id, u])), [users])
 
   const loadBasics = useCallback(async () => {
-    const [u, c] = await Promise.all([
-      api<User[]>('/api/users'),
-      api<Chat[]>('/api/chats'),
+    const [uPage, cPage] = await Promise.all([
+      api<{ items: User[]; next: string | null }>('/api/users'),
+      api<{ items: Chat[]; next: string | null }>('/api/chats'),
     ])
-    updateUsers(u)
-    updateChats(c)
+    updateUsers(uPage.items)
+    updateChats(cPage.items)
   }, [])
 
   const loadMessages = useCallback(async (chatId: string) => {

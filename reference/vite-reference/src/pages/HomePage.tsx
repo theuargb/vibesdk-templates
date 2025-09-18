@@ -1,3 +1,5 @@
+// Home page of the app, Currently a demo page for demonstration.
+// Please rewrite this file to implement your own logic. Do not replace or delete it, simply rewrite this HomePage.tsx file.
 import { useEffect } from 'react'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
