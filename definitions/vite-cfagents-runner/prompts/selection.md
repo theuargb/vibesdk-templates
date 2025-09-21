@@ -5,15 +5,11 @@ This template provides a production-ready AI agent chatbot built with Cloudflare
 * Use this template when you need:
   * AI chat applications with intelligent tool/function calling capabilities
   * Agent-based chatbots using production Cloudflare MCP servers
-  * Cloudflare Workers deployment with Durable Objects persistence
   * Multi-model AI support (GPT-4o, Gemini 2.0/2.5, Claude Opus 4)
   * Production-ready MCP integration with official TypeScript SDK
-  * Web browsing and tool calling capabilities
-  * Persistent conversations using Durable Objects
   * Real-time conversation management
   * Real-time streaming chat
   * Advanced AI Agents capabilities and AI based applications
-  * Durable objects for control plane for database or session management
 
 * Do not use it for:
   * Simple static websites without AI functionality
@@ -32,4 +28,3 @@ This template provides a production-ready AI agent chatbot built with Cloudflare
   * **Shadcn/UI** components for polished interface elements
   * **TypeScript** for type safety and extensible architecture
   * **Validated MCP Integration** using official schemas and transports
-  * **Durable Objects** for control plane for database or session management, as well as agent management
