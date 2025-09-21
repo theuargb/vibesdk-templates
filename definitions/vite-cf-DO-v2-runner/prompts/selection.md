@@ -6,6 +6,7 @@ Use when:
 - Backend-heavy apps with multiple entities and server-side persistence
 - Chats, ecommerce, dashboards
 - Cost-effective persistence without KV
+- General purpose storage for any multi-entity data
 
 Avoid when:
 - Static/SPAs with no backend

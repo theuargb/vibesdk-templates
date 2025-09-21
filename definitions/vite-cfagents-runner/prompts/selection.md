@@ -13,7 +13,7 @@ This template provides a production-ready AI agent chatbot built with Cloudflare
 
 * Do not use it for:
   * Simple static websites without AI functionality
-  * Applications that don't need advanced AI capabilities
+  * Applications that don't need AI capabilities
   * Projects requiring complex multi-user chat rooms or real-time streaming
   * Simple question-answer bots without tool requirements
 
