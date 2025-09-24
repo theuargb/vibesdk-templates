@@ -1,0 +1,20 @@
+{
+  "name": "magento2-warden-runner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Magento 2 via Cloudflare Containers",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "echo 'Use wrangler deploy to build and push the container image' && exit 0",
+    "lint": "echo 'No linting configured' && exit 0",
+    "containers:build": "wrangler containers build --image ./Dockerfile",
+    "containers:push": "wrangler containers push --image ./Dockerfile"
+  },
+  "devDependencies": {
+    "wrangler": "^4.39.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "0.0.24"
+  }
+}

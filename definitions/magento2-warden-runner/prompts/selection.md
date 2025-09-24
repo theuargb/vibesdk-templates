@@ -1,0 +1,1 @@
+Run Magento 2 as a container orchestrated by a Cloudflare Worker. Build your image, deploy with Wrangler, and let Workers handle on-demand instance lifecycle.

@@ -1,0 +1,27 @@
+{
+  "name": "magento2-warden-runner",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "containers": [
+    {
+      "class_name": "MagentoContainer",
+      "image": "./Dockerfile",
+      "max_instances": 1
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "MagentoContainer",
+        "name": "MAGENTO_CONTAINER"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["MagentoContainer"],
+      "tag": "v1"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+name: magento2-warden-runner
+display_name: Magento 2 via Cloudflare Containers
+description: Magento 2 container template powered by Cloudflare Containers. Build a PHP/Apache image (or your custom Magento image) and let a Worker orchestrate requests to on-demand container instances.
+base_reference: vite-reference
+framework:
+  type: react
+  bundler: vite
+cloudflare:
+  integrations: ["workers"]
+  deployment: workers
+features:
+  - docker
+  - magento2
+  - containers
+# Copy all files from definitions/magento2-warden-runner into the build target, then remove unused reference files
+excludes:
+  - worker/**
+  - public/**
+  - index.html
+  - vite.config.ts
+  - tailwind.config.js
+  - postcss.config.js
+  - components.json
+  - tsconfig*.json
+  - eslint.config.js
+  - bun.lock*
+  - yarn.lock
+  - pnpm-lock.yaml
+  - package-lock.json
+  - scripts/**
